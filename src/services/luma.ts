@@ -49,6 +49,7 @@ export class LumaService {
     keyframes?: VideoCreateParams['keyframes']
     loop?: boolean
     aspect_ratio?: VideoCreateParams['aspect_ratio']
+    cameraMotion?: CameraMotionOptions
   }): Promise<string> {
     try {
       const params: VideoCreateParams = {

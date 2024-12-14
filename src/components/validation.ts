@@ -1,16 +1,4 @@
 import { z } from 'zod'
-import type {
-  BaseComponentProps,
-  IntroProps,
-  OutroProps,
-  CodeProps,
-  BrowserProps,
-  VideoProps,
-  AnimationProps,
-  MemeProps,
-  ImageProps,
-  ScreenshotProps,
-} from './interfaces'
 
 export const baseSchema = z.object({
   children: z.any().optional(),
@@ -41,9 +29,28 @@ export const browserSchema = baseSchema.extend({
 })
 
 export const videoSchema = baseSchema.extend({
-  src: z.string().min(1),
-  type: z.enum(['stock', 'ai', 'custom']).optional(),
+  src: z.string().min(1).optional(),
+  type: z.enum(['stock', 'ai', 'custom', 'luma']).optional(),
   autoplay: z.boolean().optional(),
+  prompt: z.string().optional(),
+  keyframes: z.object({
+    frame0: z.union([
+      z.object({ type: z.literal('generation'), id: z.string() }),
+      z.object({ type: z.literal('image'), url: z.string() }),
+    ]).optional(),
+    frame1: z.union([
+      z.object({ type: z.literal('generation'), id: z.string() }),
+      z.object({ type: z.literal('image'), url: z.string() }),
+    ]).optional(),
+  }).optional(),
+  aspect_ratio: z.enum(['1:1', '16:9', '9:16', '4:3', '3:4', '21:9', '9:21']).optional(),
+  loop: z.boolean().optional(),
+  cameraMotion: z.object({
+    type: z.string(),
+    start: z.number().optional(),
+    end: z.number().optional(),
+    duration: z.number().optional(),
+  }).optional(),
 })
 
 export const animationSchema = baseSchema.extend({

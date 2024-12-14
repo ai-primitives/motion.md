@@ -2,6 +2,7 @@ import { BrowserService } from './browser'
 import { StockService } from './stock'
 import { AIService } from './ai'
 import { AnimationService } from './animation'
+import { LumaService } from './luma'
 
 export interface BrowserbaseConfig {
   headless?: boolean
@@ -26,11 +27,16 @@ export interface AnimationConfig {
   apiKey: string
 }
 
+export interface LumaConfig {
+  apiKey: string
+}
+
 export interface ServiceConfig {
   browser?: BrowserbaseConfig
   stock: StockConfig
   ai: AIConfig
   animation: AnimationConfig
+  luma: LumaConfig
 }
 
 export function initializeServices(config: ServiceConfig): {
@@ -38,6 +44,7 @@ export function initializeServices(config: ServiceConfig): {
   stock: StockService
   ai: AIService
   animation: AnimationService
+  luma: LumaService
 } {
   if (!config.stock?.unsplashAccessKey) {
     throw new Error('Unsplash access key is required')
@@ -50,6 +57,9 @@ export function initializeServices(config: ServiceConfig): {
   }
   if (!config.animation?.apiKey) {
     throw new Error('MagicUI API key is required')
+  }
+  if (!config.luma?.apiKey) {
+    throw new Error('Luma API key is required')
   }
 
   return {
@@ -66,7 +76,8 @@ export function initializeServices(config: ServiceConfig): {
     stock: new StockService(config.stock),
     ai: new AIService(config.ai),
     animation: new AnimationService(config.animation),
+    luma: new LumaService(config.luma),
   }
 }
 
-export { BrowserService, StockService, AIService, AnimationService }
+export { BrowserService, StockService, AIService, AnimationService, LumaService }

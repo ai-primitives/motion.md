@@ -1,4 +1,5 @@
 import { ReactNode } from 'react'
+import type { VideoCreateParams } from 'lumaai/resources/generations'
 
 export interface BaseComponentProps {
   children?: ReactNode
@@ -29,9 +30,19 @@ export interface BrowserProps extends BaseComponentProps {
 }
 
 export interface VideoProps extends BaseComponentProps {
-  src: string
-  type?: 'stock' | 'ai' | 'custom'
+  src?: string
+  type?: 'stock' | 'ai' | 'custom' | 'luma'
   autoplay?: boolean
+  prompt?: string
+  keyframes?: VideoCreateParams['keyframes']
+  aspect_ratio?: VideoCreateParams['aspect_ratio']
+  loop?: boolean
+  cameraMotion?: {
+    type: string
+    start?: number
+    end?: number
+    duration?: number
+  }
 }
 
 export interface AnimationProps extends BaseComponentProps {
