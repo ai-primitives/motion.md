@@ -84,14 +84,27 @@ export class MockAnimationService extends AnimationService {
     duration: number
     easing: string
   }> {
+    const animationName = `mock${name.charAt(0).toUpperCase()}${name.slice(1)}`
+    const keyframesStr = `0% { opacity: 0; } 100% { opacity: 1; }`
+
+    const css = `
+@keyframes ${animationName} {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.${animationName} {
+  animation: ${animationName} 1s ease-in-out;
+}`
+
     return {
-      name: 'mockAnimation',
+      name: animationName,
       defaultDuration: 1,
       defaultEasing: 'ease-in-out',
-      keyframes: '0% { opacity: 0 } 100% { opacity: 1 }',
-      css: '.mockAnimation { animation: mockAnimation 1s ease-in-out }',
       duration: 1,
-      easing: 'ease-in-out'
+      easing: 'ease-in-out',
+      keyframes: keyframesStr,
+      css
     }
   }
 }
