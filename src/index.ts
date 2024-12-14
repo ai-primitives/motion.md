@@ -5,10 +5,10 @@ import axios from 'axios'
 export const browserService = new BrowserService()
 export const stockService = new StockService({
   storyblocksApiKey: process.env.STORYBLOCKS_API_KEY,
-  unsplashAccessKey: process.env.UNSPLASH_ACCESS_KEY
+  unsplashAccessKey: process.env.UNSPLASH_ACCESS_KEY,
 })
 export const aiService = new AIService({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
 })
 export const animationService = new AnimationService()
 

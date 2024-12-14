@@ -1,9 +1,12 @@
 import { ReactNode } from 'react'
 
+export type TransitionType = 'fade' | 'slide' | 'none'
+export type MediaType = 'stock' | 'ai' | 'custom'
+
 export interface BaseComponentProps {
   children?: ReactNode
-  duration?: number
-  transition?: string
+  duration?: number // in seconds, must be positive
+  transition?: TransitionType
 }
 
 export interface IntroProps extends BaseComponentProps {
@@ -24,20 +27,22 @@ export interface CodeProps extends BaseComponentProps {
 
 export interface BrowserProps extends BaseComponentProps {
   url: string
-  width?: number
-  height?: number
+  width?: number // in pixels
+  height?: number // in pixels
 }
 
 export interface VideoProps extends BaseComponentProps {
   src: string
-  type?: 'stock' | 'ai' | 'custom'
+  type?: MediaType
+  width?: number // in pixels
+  height?: number // in pixels
   autoplay?: boolean
 }
 
 export interface AnimationProps extends BaseComponentProps {
   name: string
-  duration?: number
-  easing?: string
+  duration?: number // in seconds
+  easing?: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out'
 }
 
 export interface MemeProps extends BaseComponentProps {
@@ -49,7 +54,9 @@ export interface MemeProps extends BaseComponentProps {
 export interface ImageProps extends BaseComponentProps {
   src: string
   alt?: string
-  type?: 'stock' | 'ai' | 'custom'
+  type?: MediaType
+  width?: number // in pixels
+  height?: number // in pixels
 }
 
 export interface ScreenshotProps extends BaseComponentProps {

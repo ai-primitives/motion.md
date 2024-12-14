@@ -3,7 +3,9 @@
 ## Core Implementation Tasks
 
 ### Phase 1: Core Infrastructure
+
 - [ ] Project Setup
+
   - [ ] Configure TypeScript
   - [ ] Set up Prettier with required configuration
     ```json
@@ -17,6 +19,7 @@
   - [ ] Set up test framework
 
 - [ ] Markdown Processing
+
   - [ ] Implement MDX parser integration
   - [ ] Add frontmatter handling
   - [ ] Create slide separation logic
@@ -28,7 +31,9 @@
   - [ ] Implement props validation
 
 ### Phase 2: Video Generation
+
 - [ ] Remotion Integration
+
   - [ ] Set up video generation pipeline
   - [ ] Implement frame rendering system
   - [ ] Add transition effects support
@@ -40,7 +45,9 @@
   - [ ] Create duration calculation system
 
 ### Phase 3: Component Implementation
+
 - [ ] Core Components
+
   - [ ] Intro/Outro slides
   - [ ] Code blocks with syntax highlighting
   - [ ] Browser rendering with browserbase integration
@@ -50,6 +57,7 @@
   - [ ] Meme component
 
 - [ ] Media Integration
+
   - [ ] Stock video integration with Storyblocks
   - [ ] Stock image integration with Unsplash
   - [ ] AI-generated video support
@@ -61,7 +69,9 @@
   - [ ] Real-time browser capture and rendering
 
 ### Phase 4: CLI and Configuration
+
 - [ ] CLI Development
+
   - [ ] Implement command handling
   - [ ] Add file processing
   - [ ] Create progress reporting
@@ -76,7 +86,9 @@
   - [ ] Set up browserbase configuration
 
 ### Phase 5: Testing and Documentation
+
 - [ ] Testing
+
   - [ ] Write unit tests
   - [ ] Create integration tests
   - [ ] Implement performance testing
@@ -93,6 +105,7 @@
   - [ ] Document browserbase integration
 
 ## Future Enhancements
+
 - [ ] Live preview system
 - [ ] Extended animation options
 - [ ] Advanced AI content generation
@@ -101,6 +114,7 @@
 - [ ] Enhanced browser capture features
 
 ## Performance Optimizations
+
 - [ ] Optimize frame rendering
 - [ ] Implement asset caching
 - [ ] Memory usage optimization

@@ -5,33 +5,71 @@ import { Browser, Video, Image, Animation } from '../components/media'
 import { validateProps } from '../components/validation'
 import { introSchema, outroSchema, browserSchema, videoSchema, imageSchema, animationSchema } from '../components/validation'
 import { BrowserService, StockService, AIService, AnimationService } from '../services'
+import { parseMDX } from '../mdx/parser'
+import { z } from 'zod'
 
-interface SlideProps {
-  content: React.ReactNode
-  duration: number
-  transition?: string
-}
+// Define schema for slide props
+const slideSchema = z.object({
+  content: z.custom<React.ReactNode>(),
+  duration: z.number(),
+  transition: z.string().optional(),
+})
 
-const Slide: React.FC<SlideProps> = ({ content, duration, transition }) => {
+// Define props type from schema
+type SlideProps = z.infer<typeof slideSchema>
+
+// Simple function component for slides
+function Slide({ content, duration, transition }: SlideProps) {
   return (
-    <div className="slide" style={{ transition }}>
+    <div className='slide' style={{ transition }}>
       {content}
     </div>
   )
 }
 
+// Main composition component
 export const MotionComposition: React.FC = () => {
-  // Initialize services
-  const browserService = new BrowserService()
-  const stockService = new StockService()
-  const aiService = new AIService()
-  const animationService = new AnimationService()
+  // Initialize services with environment variables
+  const browserService = new BrowserService({
+    headless: true,
+    defaultViewport: {
+      width: 1920,
+      height: 1080,
+      deviceScaleFactor: 2,
+    }
+  })
+  const stockService = new StockService({
+    unsplashAccessKey: process.env.AUTH_SECRET || '',
+    storyblocksApiKey: process.env.AUTH_SECRET || ''
+  })
+  const aiService = new AIService({
+    apiKey: process.env.OPENAI_API_KEY || '',
+    modelName: 'gpt-4'
+  })
+  const animationService = new AnimationService({
+    apiKey: process.env.AUTH_SECRET || ''
+  })
+
+  const parseAndRender = async (mdxContent: string) => {
+    const { content, frontmatter } = await parseMDX(mdxContent, {
+      components: {
+        Intro,
+        Outro,
+        Browser,
+        Video,
+        Image,
+        Animation,
+      }
+    })
+    return { content, frontmatter }
+  }
 
   return (
     <>
       <Composition
-        id="Presentation"
+        id='Presentation'
         component={Slide}
+        schema={slideSchema}
         durationInFrames={30 * 60} // 60 seconds at 30fps
         fps={30}
         width={1920}

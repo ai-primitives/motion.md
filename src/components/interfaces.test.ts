@@ -9,14 +9,14 @@ import type {
   AnimationProps,
   MemeProps,
   ImageProps,
-  ScreenshotProps
+  ScreenshotProps,
 } from './interfaces'
 
 describe('Component Interfaces', () => {
   it('should define BaseComponentProps', () => {
     const props: BaseComponentProps = {
       duration: 5,
-      transition: 'fade'
+      transition: 'fade',
     }
     expect(props.duration).toBe(5)
     expect(props.transition).toBe('fade')
@@ -26,7 +26,7 @@ describe('Component Interfaces', () => {
     const props: IntroProps = {
       title: 'Welcome',
       subtitle: 'Presentation',
-      duration: 3
+      duration: 3,
     }
     expect(props.title).toBe('Welcome')
     expect(props.subtitle).toBe('Presentation')
@@ -36,7 +36,7 @@ describe('Component Interfaces', () => {
     const props: CodeProps = {
       language: 'typescript',
       highlighter: 'prism',
-      lineNumbers: true
+      lineNumbers: true,
     }
     expect(props.language).toBe('typescript')
     expect(props.highlighter).toBe('prism')
@@ -46,7 +46,7 @@ describe('Component Interfaces', () => {
     const props: BrowserProps = {
       url: 'https://example.com',
       width: 1920,
-      height: 1080
+      height: 1080,
     }
     expect(props.url).toBe('https://example.com')
   })

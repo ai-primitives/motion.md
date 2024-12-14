@@ -42,8 +42,10 @@ resolution:
   height: 1080
 transition: fade
 ---
+
 layout: intro
 voiceover: Discover motion.md - the future of dynamic video generation
+
 ---
 
 # Welcome to motion.md
@@ -51,8 +53,10 @@ voiceover: Discover motion.md - the future of dynamic video generation
 This is a powerful tool for creating videos from Markdown.
 
 ---
+
 voiceover: Markdown-based workflow explained.
 layout: cover
+
 ---
 
 ## Features
@@ -62,9 +66,11 @@ layout: cover
 - Video output with Remotion
 
 ---
+
 background: stock:mountains.jpg
 voiceover: Here are some amazing features.
 transition: slide
+
 ---
 
 ## Advanced Configuration
@@ -81,13 +87,13 @@ motion.md render slides.md
 Alternatively, render Markdown content as a string:
 
 ```javascript
-import { render } from 'motion.md';
+import { render } from 'motion.md'
 
 await render(`# Welcome\n---\n# Motion.md Demo`, {
   output: 'output.mp4',
   fps: 30,
   resolution: { width: 1920, height: 1080 },
-});
+})
 ```
 
 ### MDX Example
@@ -103,25 +109,23 @@ format: 1920x1080
 fps: 60
 ---
 
-<Intro title='AI Motion' voiceover='Introducing AI Motion, the declarative way to create motion graphics with AI.'>
+<Intro title="AI Motion" voiceover="Introducing AI Motion, the declarative way to create motion graphics with AI.">
   `bash npx create-ai-motion`
 </Intro>
 
 <Video
-  voiceover='Bring your ideas to life using a simple markdown-based format.'
-  prompt='Zooming into the pixels inside Markdown code on a computer screen that once blown up, transforming into a realistic view of a SpaceX rocket launch.'
+  voiceover="Bring your ideas to life using a simple markdown-based format."
+  prompt="Zooming into the pixels inside Markdown code on a computer screen that once blown up, transforming into a realistic view of a SpaceX rocket launch."
 />
 
-<Code voiceover='Markdown and MDX are easy to write and read, and can include a combination of structured data, unstructured content, executable code, and UI components.'>
+<Code voiceover="Markdown and MDX are easy to write and read, and can include a combination of structured data, unstructured content, executable code, and UI components.">
   ```mdx --- title: AI Motion ---
-  <Intro title='AI Motion' voiceover='Hello world!' />
+  <Intro title="AI Motion" voiceover="Hello world!" />
   ```
 </Code>
 
-<Browser voiceover='Powered by Remotion, a framework that renders React components into video' url='https://remotion.dev' />
+<Browser voiceover="Powered by Remotion, a framework that renders React components into video" url="https://remotion.dev" />
 ````
-
-
 
 ### Available Components
 
@@ -160,7 +164,7 @@ export default {
   theme: 'default',
   transition: 'fade',
   slideDuration: 'auto', // Default timing based on voiceover length
-};
+}
 ```
 
 ## Roadmap
@@ -177,4 +181,3 @@ Contributions are welcome! Feel free to submit issues or pull requests on [GitHu
 ## License
 
 `motion.md` is licensed under the MIT License.
-

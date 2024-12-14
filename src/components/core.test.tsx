@@ -5,9 +5,9 @@ import { Intro, Outro } from './core'
 describe('Core Components', () => {
   it('should render Intro component', () => {
     const { getByText } = render(
-      <Intro title='Welcome' subtitle='Presentation' duration={5} transition='fade'>
+      <Intro title="Welcome" subtitle="Presentation" duration={5} transition="fade">
         <p>Additional content</p>
-      </Intro>
+      </Intro>,
     )
 
     expect(getByText('Welcome')).toBeDefined()
@@ -17,9 +17,9 @@ describe('Core Components', () => {
 
   it('should render Outro component', () => {
     const { getByText } = render(
-      <Outro title='Thank You' subtitle='Questions?' duration={3} transition='slide'>
+      <Outro title="Thank You" subtitle="Questions?" duration={3} transition="slide">
         <p>Contact info</p>
-      </Outro>
+      </Outro>,
     )
 
     expect(getByText('Thank You')).toBeDefined()

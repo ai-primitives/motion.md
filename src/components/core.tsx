@@ -1,7 +1,7 @@
-import React from 'react'
-import { IntroProps, OutroProps } from './interfaces'
+import React, { FC } from 'react'
+import { IntroProps, OutroProps, TransitionType } from './interfaces'
 
-export const Intro: React.FC<IntroProps> = ({ title, subtitle, duration, transition, children }) => {
+export const Intro: FC<IntroProps> = ({ title, subtitle, duration = 5, transition = 'fade', children }) => {
   return (
     <div className="intro-slide" style={{ transition }}>
       <h1>{title}</h1>
@@ -11,7 +11,7 @@ export const Intro: React.FC<IntroProps> = ({ title, subtitle, duration, transit
   )
 }
 
-export const Outro: React.FC<OutroProps> = ({ title, subtitle, duration, transition, children }) => {
+export const Outro: FC<OutroProps> = ({ title, subtitle, duration = 5, transition = 'fade', children }) => {
   return (
     <div className="outro-slide" style={{ transition }}>
       <h1>{title}</h1>
