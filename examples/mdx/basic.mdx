@@ -1,0 +1,47 @@
+---
+theme: default
+layout: cover
+transition: fade
+---
+
+import { CodeTransition } from '../../src/components/code'
+
+# Basic MDX Presentation
+Simple example using MDX syntax
+
+---
+
+# MDX Features
+
+- Write JSX in your markdown
+- Import and use React components
+- Style with CSS-in-JS
+- Use JavaScript expressions
+
+---
+
+# Simple Component Example
+
+export const Highlight = ({children}) => (
+  <span style={{
+    backgroundColor: '#ffeb3b',
+    padding: '0.2em 0.4em',
+    borderRadius: '0.2em'
+  }}>
+    {children}
+  </span>
+)
+
+This is a <Highlight>highlighted</Highlight> text using a custom component.
+
+---
+
+# Basic Code Example
+
+```javascript
+function welcome(name) {
+  return `Hello, ${name}!`
+}
+
+console.log(welcome('World'))
+```

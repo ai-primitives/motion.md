@@ -1,0 +1,102 @@
+---
+theme: default
+layout: cover
+transition: fade
+---
+
+import { CodeTransition } from '../../src/components/code'
+import { AnimationSequence } from '../../src/components/animation'
+
+# Advanced Code Transitions
+Demonstrating sophisticated code animations
+
+---
+
+# Step-by-Step Code Evolution
+
+<CodeTransition>
+
+```typescript {1-3|4-6|all}
+interface User {
+  name: string;
+  email: string;
+}
+
+function createUser(data: User) {
+  return data;
+}
+```
+
+```typescript {1-5|6-11|all}
+interface User {
+  name: string;
+  email: string;
+  role: 'admin' | 'user';
+  createdAt: Date;
+}
+
+function createUser(data: User) {
+  validateUser(data);
+  updateAuditLog(data);
+  return saveUser(data);
+}
+```
+
+</CodeTransition>
+
+---
+
+# Error Handling Example
+
+<CodeTransition>
+
+```typescript {1-5|7-11|13-19}
+interface ValidationError {
+  field: string;
+  message: string;
+  code: number;
+}
+
+function validateEmail(email: string): boolean {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+
+// Error annotation example
+function validateUser(user: User) {
+  if (!validateEmail(user.email)) {
+    throw new ValidationError({
+      field: 'email',
+      message: 'Invalid email format',
+      code: 400
+    });
+  }
+}
+```
+
+</CodeTransition>
+
+---
+
+# Token-Level Transitions
+
+<CodeTransition>
+
+```python
+def process_data(items):
+    result = []
+    for item in items:
+        result.append(item * 2)
+    return result
+```
+
+```python
+def process_data(items):
+    return [
+        item * 2
+        for item in items
+        if item > 0
+    ]
+```
+
+</CodeTransition>
