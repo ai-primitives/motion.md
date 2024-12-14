@@ -4,21 +4,26 @@
   "description": "`motion.md` is a powerful npm package and CLI tool designed for creating dynamic, high-quality videos using Markdown syntax. Fully compatible with [Slidev](https://sli.dev) syntax, `motion.md` extends the syntax to include advanced configuration options in both the front matter and at the slide level, leveraging [Remotion](https://remotion.dev) to transform your slides into stunning videos. This makes `motion.md` ideal for presentations, tutorials, and content creation.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
     "build": "tsc && vite build",
     "dev": "vite",
     "preview": "vite preview",
-    "lint": "prettier --write ."
+    "lint": "prettier --write .",
+    "coverage": "vitest run --coverage"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
     "@types/node": "^22.10.2",
     "@vitejs/plugin-react": "^4.3.4",
+    "jsdom": "^25.0.1",
     "prettier": "^3.4.2",
     "typescript": "^5.7.2",
-    "vite": "^6.0.3"
+    "vite": "^6.0.3",
+    "vitest": "^2.1.8"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.240",

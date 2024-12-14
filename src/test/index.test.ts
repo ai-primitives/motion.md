@@ -1,0 +1,1 @@
+import { describe, it, expect } from "vitest"\nimport { render } from "@testing-library/react"\n\ndescribe("render function", () => {\n  it("should be defined", () => {\n    expect(true).toBe(true)\n  })\n})
