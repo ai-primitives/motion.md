@@ -10,19 +10,19 @@ import {
   memeSchema,
   imageSchema,
   screenshotSchema,
-  validateProps
+  validateProps,
 } from './validation'
 
 describe('Props Validation', () => {
   it('should validate base props', () => {
     const validProps = {
       duration: 5,
-      transition: 'fade'
+      transition: 'fade',
     }
     expect(() => validateProps(baseSchema, validProps)).not.toThrow()
 
     const invalidProps = {
-      duration: -1
+      duration: -1,
     }
     expect(() => validateProps(baseSchema, invalidProps)).toThrow()
   })
@@ -31,13 +31,13 @@ describe('Props Validation', () => {
     const validProps = {
       title: 'Welcome',
       subtitle: 'Presentation',
-      duration: 3
+      duration: 3,
     }
     expect(() => validateProps(introSchema, validProps)).not.toThrow()
 
     const invalidProps = {
       title: '',
-      duration: 3
+      duration: 3,
     }
     expect(() => validateProps(introSchema, invalidProps)).toThrow()
   })
@@ -46,13 +46,13 @@ describe('Props Validation', () => {
     const validProps = {
       url: 'https://example.com',
       width: 1920,
-      height: 1080
+      height: 1080,
     }
     expect(() => validateProps(browserSchema, validProps)).not.toThrow()
 
     const invalidProps = {
       url: 'not-a-url',
-      width: -1
+      width: -1,
     }
     expect(() => validateProps(browserSchema, invalidProps)).toThrow()
   })
