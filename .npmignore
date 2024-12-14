@@ -1,0 +1,9 @@
+src/**/*.test.ts
+src/**/*.test.tsx
+src/test/
+.github/
+.prettierrc
+vitest.config.ts
+tsconfig.json
+*.log
+coverage/

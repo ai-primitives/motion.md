@@ -6,6 +6,11 @@
   "bin": {
     "motion.md": "./dist/cli/index.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "test": "vitest",
     "build": "tsc && vite build",
@@ -15,9 +20,26 @@
     "coverage": "vitest run --coverage",
     "format": "prettier --write 'src/**/*.{ts,tsx}'"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "markdown",
+    "video",
+    "presentation",
+    "slidev",
+    "remotion",
+    "cli",
+    "mdx",
+    "animation"
+  ],
+  "author": "AI Primitives",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ai-primitives/motion.md.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
