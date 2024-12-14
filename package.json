@@ -33,6 +33,7 @@
     "@types/react": "^19.0.1",
     "axios": "^1.7.9",
     "browserbase": "^3.0.3",
+    "node-fetch": "^3.3.2",
     "react": "^19.0.0",
     "remotion": "^4.0.240",
     "unsplash-js": "^7.0.19"
