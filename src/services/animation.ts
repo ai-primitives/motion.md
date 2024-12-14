@@ -1,14 +1,36 @@
 import axios from 'axios'
 import { AnimationConfig } from './index'
 
+interface AnimationOptions {
+  duration?: number
+  easing?: string
+}
+
+interface AnimationData {
+  name: string
+  defaultDuration?: number
+  defaultEasing?: string
+  keyframes: string
+}
+
+interface AnimationResult {
+  name: string
+  css: string
+  duration: number
+  easing: string
+}
+
 export class AnimationService {
   private apiKey: string
 
   constructor(config: AnimationConfig) {
     this.apiKey = config.apiKey || process.env.MAGICUI_API_KEY || ''
+    if (!this.apiKey) {
+      throw new Error('MagicUI API key is required')
+    }
   }
 
-  private async fetchAnimationData(name: string) {
+  private async fetchAnimationData(name: string): Promise<AnimationData> {
     try {
       const response = await axios.get(`https://magicui.design/api/animations/${name}`, {
         headers: {
@@ -16,14 +38,7 @@ export class AnimationService {
         },
       })
 
-      const data = response.data as {
-        name: string
-        defaultDuration?: number
-        defaultEasing?: string
-        keyframes: string
-      }
-
-      return data
+      return response.data as AnimationData
     } catch (error) {
       if (error instanceof Error) {
         if ((error as any).response?.status === 404) {
@@ -35,18 +50,24 @@ export class AnimationService {
     }
   }
 
-  async getAnimation(name: string) {
-    const animationData = await this.fetchAnimationData(name)
+  async getAnimation(name: string, options: AnimationOptions = {}): Promise<AnimationResult> {
+    const data = await this.fetchAnimationData(name)
+    const duration = options.duration ?? data.defaultDuration ?? 1
+    const easing = options.easing ?? data.defaultEasing ?? 'ease-in-out'
 
     return {
-      ...animationData,
-      duration: animationData.defaultDuration || 1,
-      easing: animationData.defaultEasing || 'ease-in-out',
-      css: this.generateAnimationCSS(animationData),
+      name: data.name,
+      css: this.generateAnimationCSS({
+        ...data,
+        defaultDuration: duration,
+        defaultEasing: easing,
+      }),
+      duration,
+      easing,
     }
   }
 
-  private generateAnimationCSS(animationData: any) {
+  private generateAnimationCSS(animationData: AnimationData): string {
     const duration = animationData.defaultDuration || 1
     const easing = animationData.defaultEasing || 'ease-in-out'
 

@@ -1,14 +1,25 @@
 import * as puppeteer from 'puppeteer'
 import { BrowserbaseConfig } from './index'
 
+interface ViewportOptions {
+  width: number
+  height: number
+  deviceScaleFactor?: number
+}
+
+interface CaptureResult {
+  screenshot: Buffer
+  html: string
+}
+
 export class BrowserService {
   private browser: puppeteer.Browser | null = null
   private config: BrowserbaseConfig
 
-  constructor(config?: BrowserbaseConfig) {
+  constructor(config: BrowserbaseConfig = {}) {
     this.config = {
-      headless: config?.headless ?? true,
-      defaultViewport: config?.defaultViewport ?? {
+      headless: config.headless ?? true,
+      defaultViewport: config.defaultViewport ?? {
         width: 1920,
         height: 1080,
         deviceScaleFactor: 2,
@@ -26,19 +37,26 @@ export class BrowserService {
     return this.browser
   }
 
-  async capture(url: string) {
+  async capture(url: string, viewport?: ViewportOptions): Promise<CaptureResult> {
     const browser = await this.initialize()
     const page = await browser.newPage()
 
     try {
-      await page.setViewport(this.config.defaultViewport!)
-      await page.goto(url, { waitUntil: 'networkidle0' })
-      return await page.screenshot({ type: 'png' })
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to capture screenshot: ${error.message}`)
+      if (viewport) {
+        await page.setViewport({
+          ...this.config.defaultViewport,
+          ...viewport,
+        })
       }
-      throw new Error('Failed to capture screenshot: Unknown error')
+
+      await page.goto(url, { waitUntil: 'networkidle0' })
+      const screenshot = await page.screenshot({ type: 'png', fullPage: true })
+      const html = await page.content()
+
+      return {
+        screenshot: screenshot as Buffer,
+        html,
+      }
     } finally {
       await page.close()
     }

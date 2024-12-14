@@ -3,6 +3,24 @@ import nodeFetch from 'node-fetch'
 import axios from 'axios'
 import { StockConfig } from './index'
 
+type ImageQuality = 'regular' | 'full' | 'thumb'
+type VideoQuality = '4k' | 'hd' | 'preview'
+
+interface StockImageResult {
+  url: string
+  credit: string
+}
+
+interface StockVideoResult {
+  url: string
+}
+
+interface StoryblocksResponse {
+  results: Array<{
+    url: string
+  }>
+}
+
 export class StockService {
   private unsplash
   private storyblocksApiKey: string
@@ -22,75 +40,27 @@ export class StockService {
     this.storyblocksApiKey = config.storyblocksApiKey
   }
 
-  async getVideo(query: string, quality: '4k' | 'hd' | 'preview' = '4k') {
-    try {
-      const response = await axios.get('https://api.storyblocks.com/api/v1/video/search', {
-        params: {
-          query,
-          page: 1,
-          per_page: 1,
-          keywords: query,
-          content_type: quality,
-        },
-        headers: {
-          Authorization: `Bearer ${this.storyblocksApiKey}`,
-        },
-      })
-
-      const data = response.data as {
-        results?: Array<{
-          url: string
-          preview_url: string
-          thumbnail_url: string
-          title: string
-          duration: number
-        }>
-      }
-
-      if (!data.results?.length) {
-        throw new Error('No videos found')
-      }
-
-      return {
-        url: data.results[0].url,
-        preview: data.results[0].preview_url,
-        thumbnail: data.results[0].thumbnail_url,
-        title: data.results[0].title,
-        duration: data.results[0].duration,
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to fetch video: ${error.message}`)
-      }
-      throw new Error('Failed to fetch video: Unknown error')
-    }
+  async getVideo(query: string, quality: VideoQuality = '4k'): Promise<StockVideoResult> {
+    const response = await axios.get<StoryblocksResponse>('https://api.storyblocks.com/api/v1/video/search', {
+      params: {
+        query,
+        quality,
+        api_key: this.storyblocksApiKey,
+      },
+    })
+    const results = response.data.results
+    if (results.length === 0) throw new Error('No video found')
+    return { url: results[0].url }
   }
 
-  async getImage(query: string, quality: 'regular' | 'full' | 'thumb' = 'regular') {
-    try {
-      const result = await this.unsplash.search.getPhotos({
-        query,
-        perPage: 1,
-        orientation: 'landscape',
-      })
+  async getImage(query: string, quality: ImageQuality = 'regular'): Promise<StockImageResult> {
+    const result = await this.unsplash.search.getPhotos({ query })
+    if (!result.response?.results.length) throw new Error('No image found')
 
-      if (!result.response?.results?.length) {
-        throw new Error('No images found')
-      }
-
-      const photo = result.response.results[0]
-      return {
-        url: photo.urls[quality],
-        credit: `Photo by ${photo.user.name} on Unsplash`,
-        title: photo.description || photo.alt_description || query,
-        width: photo.width,
-        height: photo.height,
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to fetch image: ${error.message}`)
-      }
-      throw new Error('Failed to fetch image: Unknown error')
+    const photo = result.response.results[0]
+    return {
+      url: photo.urls[quality],
+      credit: `Photo by ${photo.user.name}`,
     }
   }
 }
