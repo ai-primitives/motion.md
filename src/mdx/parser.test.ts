@@ -1,0 +1,1 @@
+import { describe, it, expect } from "vitest"\nimport { parseMDX } from "./parser"\n\ndescribe("MDX Parser", () => {\n  it("should parse basic MDX content", async () => {\n    const result = await parseMDX("# Hello World")\n    expect(result.code).toBeDefined()\n    expect(result.content).toBeDefined()\n  })\n})
