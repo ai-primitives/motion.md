@@ -36,7 +36,9 @@
     "node-fetch": "^3.3.2",
     "react": "^19.0.0",
     "remotion": "^4.0.240",
-    "unsplash-js": "^7.0.19"
+    "unsplash-js": "^7.0.19",
+    "vfile": "^6.0.3",
+    "vfile-matter": "^5.0.0"
   },
   "type": "module"
 }
