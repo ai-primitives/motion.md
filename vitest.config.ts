@@ -1,1 +1,11 @@
-import { defineConfig } from "vitest/config"\nimport react from "@vitejs/plugin-react"\n\nexport default defineConfig({\n  plugins: [react()],\n  test: {\n    environment: "jsdom",\n    globals: true,\n    setupFiles: ["./src/test/setup.ts"]\n  }\n})
+import { defineConfig } from 'vitest/config'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./src/test/setup.ts']
+  }
+})

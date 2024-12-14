@@ -1,1 +1,64 @@
-import { z } from "zod"\nimport type { BaseComponentProps, IntroProps, OutroProps, CodeProps, BrowserProps, VideoProps, AnimationProps, MemeProps, ImageProps, ScreenshotProps } from "./interfaces"\n\nexport const baseSchema = z.object({\n  children: z.any().optional(),\n  duration: z.number().min(0).optional(),\n  transition: z.string().optional()\n})\n\nexport const introSchema = baseSchema.extend({\n  title: z.string().min(1),\n  subtitle: z.string().optional()\n})\n\nexport const outroSchema = baseSchema.extend({\n  title: z.string().min(1),\n  subtitle: z.string().optional()\n})\n\nexport const codeSchema = baseSchema.extend({\n  language: z.string().min(1),\n  highlighter: z.enum(["prism", "shiki"]).optional(),\n  lineNumbers: z.boolean().optional()\n})\n\nexport const browserSchema = baseSchema.extend({\n  url: z.string().url(),\n  width: z.number().min(1).optional(),\n  height: z.number().min(1).optional()\n})\n\nexport const videoSchema = baseSchema.extend({\n  src: z.string().min(1),\n  type: z.enum(["stock", "ai", "custom"]).optional(),\n  autoplay: z.boolean().optional()\n})\n\nexport const animationSchema = baseSchema.extend({\n  name: z.string().min(1),\n  duration: z.number().min(0).optional(),\n  easing: z.string().optional()\n})\n\nexport const memeSchema = baseSchema.extend({\n  template: z.string().min(1),\n  topText: z.string().optional(),\n  bottomText: z.string().optional()\n})\n\nexport const imageSchema = baseSchema.extend({\n  src: z.string().min(1),\n  alt: z.string().optional(),\n  type: z.enum(["stock", "ai", "custom"]).optional()\n})\n\nexport const screenshotSchema = baseSchema.extend({\n  url: z.string().url(),\n  selector: z.string().optional(),\n  fullPage: z.boolean().optional()\n})\n\nexport function validateProps<T>(schema: z.ZodSchema<T>, props: T): T {\n  return schema.parse(props)\n}\n
+import { z } from 'zod'
+import type { BaseComponentProps, IntroProps, OutroProps, CodeProps, BrowserProps, VideoProps, AnimationProps, MemeProps, ImageProps, ScreenshotProps } from './interfaces'
+
+export const baseSchema = z.object({
+  children: z.any().optional(),
+  duration: z.number().min(0).optional(),
+  transition: z.string().optional()
+})
+
+export const introSchema = baseSchema.extend({
+  title: z.string().min(1),
+  subtitle: z.string().optional()
+})
+
+export const outroSchema = baseSchema.extend({
+  title: z.string().min(1),
+  subtitle: z.string().optional()
+})
+
+export const codeSchema = baseSchema.extend({
+  language: z.string().min(1),
+  highlighter: z.enum(['prism', 'shiki']).optional(),
+  lineNumbers: z.boolean().optional()
+})
+
+export const browserSchema = baseSchema.extend({
+  url: z.string().url(),
+  width: z.number().min(1).optional(),
+  height: z.number().min(1).optional()
+})
+
+export const videoSchema = baseSchema.extend({
+  src: z.string().min(1),
+  type: z.enum(['stock', 'ai', 'custom']).optional(),
+  autoplay: z.boolean().optional()
+})
+
+export const animationSchema = baseSchema.extend({
+  name: z.string().min(1),
+  duration: z.number().min(0).optional(),
+  easing: z.string().optional()
+})
+
+export const memeSchema = baseSchema.extend({
+  template: z.string().min(1),
+  topText: z.string().optional(),
+  bottomText: z.string().optional()
+})
+
+export const imageSchema = baseSchema.extend({
+  src: z.string().min(1),
+  alt: z.string().optional(),
+  type: z.enum(['stock', 'ai', 'custom']).optional()
+})
+
+export const screenshotSchema = baseSchema.extend({
+  url: z.string().url(),
+  selector: z.string().optional(),
+  fullPage: z.boolean().optional()
+})
+
+export function validateProps<T>(schema: z.ZodSchema<T>, props: T): T {
+  return schema.parse(props)
+}

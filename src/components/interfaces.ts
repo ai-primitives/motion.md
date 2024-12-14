@@ -1,1 +1,59 @@
-import { ReactNode } from "react"\n\nexport interface BaseComponentProps {\n  children?: ReactNode\n  duration?: number\n  transition?: string\n}\n\nexport interface IntroProps extends BaseComponentProps {\n  title: string\n  subtitle?: string\n}\n\nexport interface OutroProps extends BaseComponentProps {\n  title: string\n  subtitle?: string\n}\n\nexport interface CodeProps extends BaseComponentProps {\n  language: string\n  highlighter?: "prism" | "shiki"\n  lineNumbers?: boolean\n}\n\nexport interface BrowserProps extends BaseComponentProps {\n  url: string\n  width?: number\n  height?: number\n}\n\nexport interface VideoProps extends BaseComponentProps {\n  src: string\n  type?: "stock" | "ai" | "custom"\n  autoplay?: boolean\n}\n\nexport interface AnimationProps extends BaseComponentProps {\n  name: string\n  duration?: number\n  easing?: string\n}\n\nexport interface MemeProps extends BaseComponentProps {\n  template: string\n  topText?: string\n  bottomText?: string\n}\n\nexport interface ImageProps extends BaseComponentProps {\n  src: string\n  alt?: string\n  type?: "stock" | "ai" | "custom"\n}\n\nexport interface ScreenshotProps extends BaseComponentProps {\n  url: string\n  selector?: string\n  fullPage?: boolean\n}
+import { ReactNode } from 'react'
+
+export interface BaseComponentProps {
+  children?: ReactNode
+  duration?: number
+  transition?: string
+}
+
+export interface IntroProps extends BaseComponentProps {
+  title: string
+  subtitle?: string
+}
+
+export interface OutroProps extends BaseComponentProps {
+  title: string
+  subtitle?: string
+}
+
+export interface CodeProps extends BaseComponentProps {
+  language: string
+  highlighter?: 'prism' | 'shiki'
+  lineNumbers?: boolean
+}
+
+export interface BrowserProps extends BaseComponentProps {
+  url: string
+  width?: number
+  height?: number
+}
+
+export interface VideoProps extends BaseComponentProps {
+  src: string
+  type?: 'stock' | 'ai' | 'custom'
+  autoplay?: boolean
+}
+
+export interface AnimationProps extends BaseComponentProps {
+  name: string
+  duration?: number
+  easing?: string
+}
+
+export interface MemeProps extends BaseComponentProps {
+  template: string
+  topText?: string
+  bottomText?: string
+}
+
+export interface ImageProps extends BaseComponentProps {
+  src: string
+  alt?: string
+  type?: 'stock' | 'ai' | 'custom'
+}
+
+export interface ScreenshotProps extends BaseComponentProps {
+  url: string
+  selector?: string
+  fullPage?: boolean
+}

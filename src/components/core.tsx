@@ -1,1 +1,22 @@
-import React from "react"\nimport { IntroProps, OutroProps } from "./interfaces"\n\nexport const Intro: React.FC<IntroProps> = ({ title, subtitle, duration, transition, children }) => {\n  return (\n    <div className="intro-slide" style={{ transition }}>\n      <h1>{title}</h1>\n      {subtitle && <h2>{subtitle}</h2>}\n      {children}\n    </div>\n  )\n}\n\nexport const Outro: React.FC<OutroProps> = ({ title, subtitle, duration, transition, children }) => {\n  return (\n    <div className="outro-slide" style={{ transition }}>\n      <h1>{title}</h1>\n      {subtitle && <h2>{subtitle}</h2>}\n      {children}\n    </div>\n  )\n}\n
+import React from 'react'
+import { IntroProps, OutroProps } from './interfaces'
+
+export const Intro: React.FC<IntroProps> = ({ title, subtitle, duration, transition, children }) => {
+  return (
+    <div className="intro-slide" style={{ transition }}>
+      <h1>{title}</h1>
+      {subtitle && <h2>{subtitle}</h2>}
+      {children}
+    </div>
+  )
+}
+
+export const Outro: React.FC<OutroProps> = ({ title, subtitle, duration, transition, children }) => {
+  return (
+    <div className="outro-slide" style={{ transition }}>
+      <h1>{title}</h1>
+      {subtitle && <h2>{subtitle}</h2>}
+      {children}
+    </div>
+  )
+}
