@@ -5,16 +5,20 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "build": "tsc && vite build",
+    "dev": "vite",
+    "preview": "vite preview",
+    "lint": "prettier --write ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^22.10.2",
+    "@vitejs/plugin-react": "^4.3.4",
     "prettier": "^3.4.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.240",
