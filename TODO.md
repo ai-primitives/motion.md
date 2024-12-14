@@ -51,7 +51,7 @@
 
 - [ ] Media Integration
   - [ ] Stock video integration with Storyblocks
-  - [ ] Stock image integration with Upstash
+  - [ ] Stock image integration with Unsplash
   - [ ] AI-generated video support
   - [ ] AI-generated image support
 
