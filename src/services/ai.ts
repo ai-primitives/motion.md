@@ -1,1 +1,105 @@
-import axios from "axios"\n\nexport class AIService {\n  private apiKey: string\n\n  constructor(config: { apiKey?: string }) {\n    this.apiKey = config.apiKey || process.env.OPENAI_API_KEY || ""\n  }\n\n  private async validateApiKey() {\n    if (!this.apiKey) {\n      throw new Error("OpenAI API key is required")\n    }\n  }\n\n  async generateVideo(prompt: string, config: AIGenerationConfig) {\n    await this.validateApiKey()\n    \n    const response = await axios.post(\n      "https://api.openai.com/v1/images/generations",\n      {\n        prompt,\n        model: config.model || "dall-e-3",\n        n: 1,\n        size: "1024x1024",\n        response_format: "url"\n      },\n      {\n        headers: {\n          "Authorization": `Bearer ${this.apiKey}`,\n          "Content-Type": "application/json"\n        }\n      }\n    )\n\n    return response.data.data[0].url\n  }\n\n  async generateImage(prompt: string, config: AIGenerationConfig) {\n    await this.validateApiKey()\n\n    const response = await axios.post(\n      "https://api.openai.com/v1/images/generations",\n      {\n        prompt,\n        model: config.model || "dall-e-3",\n        n: 1,\n        size: "1024x1024",\n        response_format: "url"\n      },\n      {\n        headers: {\n          "Authorization": `Bearer ${this.apiKey}`,\n          "Content-Type": "application/json"\n        }\n      }\n    )\n\n    return response.data.data[0].url\n  }\n\n  async generateVoiceover(text: string, config: AIGenerationConfig) {\n    await this.validateApiKey()\n\n    const response = await axios.post(\n      "https://api.openai.com/v1/audio/speech",\n      {\n        input: text,\n        model: config.model || "tts-1",\n        voice: "alloy"\n      },\n      {\n        headers: {\n          "Authorization": `Bearer ${this.apiKey}`,\n          "Content-Type": "application/json"\n        },\n        responseType: "arraybuffer"\n      }\n    )\n\n    return Buffer.from(response.data)\n  }\n}
+import axios from 'axios'
+import { AIGenerationConfig } from './index'
+
+export class AIService {
+  private apiKey: string
+
+  constructor(config: { apiKey?: string }) {
+    this.apiKey = config.apiKey || process.env.OPENAI_API_KEY || ''
+  }
+
+  private async validateApiKey() {
+    if (!this.apiKey) {
+      throw new Error('OpenAI API key is required')
+    }
+  }
+
+  async generateVideo(prompt: string, config: AIGenerationConfig) {
+    await this.validateApiKey()
+
+    try {
+      const response = await axios.post(
+        'https://api.openai.com/v1/images/generations',
+        {
+          prompt,
+          model: config.model || 'dall-e-3',
+          n: 1,
+          size: '1024x1024',
+          response_format: 'url'
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+
+      return response.data.data[0].url
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to generate video: ${error.message}`)
+      }
+      throw new Error('Failed to generate video: Unknown error')
+    }
+  }
+
+  async generateImage(prompt: string, config: AIGenerationConfig) {
+    await this.validateApiKey()
+
+    try {
+      const response = await axios.post(
+        'https://api.openai.com/v1/images/generations',
+        {
+          prompt,
+          model: config.model || 'dall-e-3',
+          n: 1,
+          size: '1024x1024',
+          response_format: 'url'
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+
+      return response.data.data[0].url
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to generate image: ${error.message}`)
+      }
+      throw new Error('Failed to generate image: Unknown error')
+    }
+  }
+
+  async generateVoiceover(text: string, config: AIGenerationConfig) {
+    await this.validateApiKey()
+
+    try {
+      const response = await axios.post(
+        'https://api.openai.com/v1/audio/speech',
+        {
+          input: text,
+          model: config.model || 'tts-1',
+          voice: 'alloy'
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json'
+          },
+          responseType: 'arraybuffer'
+        }
+      )
+
+      return Buffer.from(response.data)
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to generate voiceover: ${error.message}`)
+      }
+      throw new Error('Failed to generate voiceover: Unknown error')
+    }
+  }
+}

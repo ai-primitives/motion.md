@@ -1,1 +1,36 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"\nimport { BrowserService } from "./browser"\n\nvi.mock("browserbase", () => ({\n  Browser: vi.fn().mockImplementation(() => ({\n    newPage: vi.fn().mockResolvedValue({\n      setViewport: vi.fn(),\n      goto: vi.fn(),\n      screenshot: vi.fn().mockResolvedValue(Buffer.from("test")),\n      close: vi.fn()\n    }),\n    close: vi.fn()\n  }))\n}))\n\ndescribe("BrowserService", () => {\n  let service: BrowserService\n\n  beforeEach(() => {\n    service = new BrowserService()\n  })\n\n  afterEach(async () => {\n    await service.cleanup()\n  })\n\n  it("should capture screenshot", async () => {\n    const screenshot = await service.capture("https://example.com", {\n      width: 1920,\n      height: 1080\n    })\n    expect(screenshot).toBeDefined()\n  })\n})
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { BrowserService } from './browser'
+
+vi.mock('puppeteer', () => ({
+  default: {
+    launch: vi.fn().mockResolvedValue({
+      newPage: vi.fn().mockResolvedValue({
+        setViewport: vi.fn(),
+        goto: vi.fn(),
+        screenshot: vi.fn().mockResolvedValue(Buffer.from('test')),
+        close: vi.fn(),
+      }),
+      close: vi.fn(),
+    }),
+  },
+}))
+
+describe('BrowserService', () => {
+  let service: BrowserService
+
+  beforeEach(() => {
+    service = new BrowserService()
+  })
+
+  afterEach(async () => {
+    await service.cleanup()
+  })
+
+  it('should capture screenshot', async () => {
+    const screenshot = await service.capture('https://example.com', {
+      width: 1920,
+      height: 1080,
+    })
+    expect(screenshot).toBeDefined()
+  })
+})

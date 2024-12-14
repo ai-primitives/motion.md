@@ -5,19 +5,16 @@ export interface BrowserbaseConfig {
 }
 
 export interface StockVideoConfig {
-  apiKey?: string
-  quality?: "preview" | "hd" | "4k"
+  quality?: '4k' | 'hd' | 'preview'
 }
 
 export interface StockImageConfig {
-  apiKey?: string
-  quality?: "thumb" | "regular" | "full"
+  quality?: 'regular' | 'full' | 'thumb'
 }
 
 export interface AIGenerationConfig {
-  provider?: string
   model?: string
-  apiKey?: string
+  provider?: 'openai'
 }
 
 export interface AnimationConfig {
@@ -25,45 +22,8 @@ export interface AnimationConfig {
   easing?: string
 }
 
-export class BrowserService {
-  async capture(url: string, config: BrowserbaseConfig) {
-    // TODO: Implement browserbase capture
-    throw new Error("Not implemented")
-  }
-}
-
-export class StockService {
-  async getVideo(query: string, config: StockVideoConfig) {
-    // TODO: Implement Storyblocks integration
-    throw new Error("Not implemented")
-  }
-
-  async getImage(query: string, config: StockImageConfig) {
-    // TODO: Implement Unsplash integration
-    throw new Error("Not implemented")
-  }
-}
-
-export class AIService {
-  async generateVideo(prompt: string, config: AIGenerationConfig) {
-    // TODO: Implement AI video generation
-    throw new Error("Not implemented")
-  }
-
-  async generateImage(prompt: string, config: AIGenerationConfig) {
-    // TODO: Implement AI image generation
-    throw new Error("Not implemented")
-  }
-
-  async generateVoiceover(text: string, config: AIGenerationConfig) {
-    // TODO: Implement AI voiceover generation
-    throw new Error("Not implemented")
-  }
-}
-
-export class AnimationService {
-  async getAnimation(name: string, config: AnimationConfig) {
-    // TODO: Implement magicui.design animation
-    throw new Error("Not implemented")
-  }
-}
+// Export service classes
+export { BrowserService } from './browser'
+export { StockService } from './stock'
+export { AIService } from './ai'
+export { AnimationService } from './animation'

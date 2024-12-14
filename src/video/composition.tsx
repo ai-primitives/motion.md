@@ -39,7 +39,7 @@ export const MotionComposition: React.FC = () => {
         defaultProps={{
           content: <div>Loading...</div>,
           duration: 5,
-          transition: 'fade'
+          transition: 'fade',
         }}
       />
     </>

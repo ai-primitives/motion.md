@@ -1,1 +1,50 @@
-import { Browser as BrowserBase } from "browserbase"\n\nexport class BrowserService {\n  private browser: BrowserBase | null = null\n\n  private async initialize() {\n    if (!this.browser) {\n      this.browser = new BrowserBase({\n        headless: true,\n        defaultViewport: {\n          width: 1920,\n          height: 1080,\n          deviceScaleFactor: 2\n        }\n      })\n    }\n    return this.browser\n  }\n\n  async capture(url: string, config: BrowserbaseConfig) {\n    const browser = await this.initialize()\n    const page = await browser.newPage()\n    \n    try {\n      await page.setViewport({\n        width: config.width,\n        height: config.height,\n        deviceScaleFactor: config.deviceScaleFactor || 2\n      })\n\n      await page.goto(url, { waitUntil: "networkidle0" })\n      return await page.screenshot({ type: "png" })\n    } finally {\n      await page.close()\n    }\n  }\n\n  async cleanup() {\n    if (this.browser) {\n      await this.browser.close()\n      this.browser = null\n    }\n  }\n}
+import * as puppeteer from 'puppeteer'
+import { BrowserbaseConfig } from './index'
+
+export class BrowserService {
+  private browser: puppeteer.Browser | null = null
+
+  private async initialize() {
+    if (!this.browser) {
+      this.browser = await puppeteer.launch({
+        headless: true,
+        defaultViewport: {
+          width: 1920,
+          height: 1080,
+          deviceScaleFactor: 2
+        }
+      })
+    }
+    return this.browser
+  }
+
+  async capture(url: string, config: BrowserbaseConfig) {
+    const browser = await this.initialize()
+    const page = await browser.newPage()
+
+    try {
+      await page.setViewport({
+        width: config.width,
+        height: config.height,
+        deviceScaleFactor: config.deviceScaleFactor || 2
+      })
+
+      await page.goto(url, { waitUntil: 'networkidle0' })
+      return await page.screenshot({ type: 'png' })
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to capture screenshot: ${error.message}`)
+      }
+      throw new Error('Failed to capture screenshot: Unknown error')
+    } finally {
+      await page.close()
+    }
+  }
+
+  async cleanup() {
+    if (this.browser) {
+      await this.browser.close()
+      this.browser = null
+    }
+  }
+}

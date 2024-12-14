@@ -9,7 +9,7 @@ describe('Video Rendering', () => {
       output: path.join(__dirname, '../tmp/test.mp4'),
       fps: 30,
       width: 1920,
-      height: 1080
+      height: 1080,
     }
 
     await expect(render(options)).resolves.not.toThrow()
@@ -18,7 +18,7 @@ describe('Video Rendering', () => {
   it('should render a single frame', async () => {
     const options = {
       input: 'test.md',
-      output: path.join(__dirname, '../tmp/test.mp4')
+      output: path.join(__dirname, '../tmp/test.mp4'),
     }
 
     const frame = await renderFrame(0, options)

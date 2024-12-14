@@ -1,1 +1,41 @@
-import { describe, it, expect, vi, beforeEach } from "vitest"\nimport { AnimationService } from "./animation"\n\nvi.mock("axios", () => ({\n  default: {\n    get: vi.fn().mockResolvedValue({\n      data: {\n        name: "fadeIn",\n        defaultDuration: 0.5,\n        defaultEasing: "ease-in",\n        keyframes: "from { opacity: 0; } to { opacity: 1; }"\n      }\n    })\n  }\n}))\n\ndescribe("AnimationService", () => {\n  let service: AnimationService\n\n  beforeEach(() => {\n    service = new AnimationService()\n  })\n\n  it("should fetch and process animation", async () => {\n    const result = await service.getAnimation("fadeIn", {})\n    expect(result.name).toBe("fadeIn")\n    expect(result.css).toContain("@keyframes fadeIn")\n    expect(result.duration).toBe(0.5)\n    expect(result.easing).toBe("ease-in")\n  })\n\n  it("should override duration and easing", async () => {\n    const result = await service.getAnimation("fadeIn", {\n      duration: 2,\n      easing: "ease-out"\n    })\n    expect(result.duration).toBe(2)\n    expect(result.easing).toBe("ease-out")\n    expect(result.css).toContain("animation: fadeIn 2s ease-out")\n  })\n})
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { AnimationService } from './animation'
+
+vi.mock('axios', () => ({
+  default: {
+    get: vi.fn().mockResolvedValue({
+      data: {
+        name: 'fadeIn',
+        defaultDuration: 0.5,
+        defaultEasing: 'ease-in',
+        keyframes: 'from { opacity: 0; } to { opacity: 1; }',
+      },
+    }),
+  },
+}))
+
+describe('AnimationService', () => {
+  let service: AnimationService
+
+  beforeEach(() => {
+    service = new AnimationService()
+  })
+
+  it('should fetch and process animation', async () => {
+    const result = await service.getAnimation('fadeIn', {})
+    expect(result.name).toBe('fadeIn')
+    expect(result.css).toContain('@keyframes fadeIn')
+    expect(result.duration).toBe(0.5)
+    expect(result.easing).toBe('ease-in')
+  })
+
+  it('should override duration and easing', async () => {
+    const result = await service.getAnimation('fadeIn', {
+      duration: 2,
+      easing: 'ease-out',
+    })
+    expect(result.duration).toBe(2)
+    expect(result.easing).toBe('ease-out')
+    expect(result.css).toContain('animation: fadeIn 2s ease-out')
+  })
+})

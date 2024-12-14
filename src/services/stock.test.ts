@@ -1,1 +1,59 @@
-import { describe, it, expect, vi, beforeEach } from "vitest"\nimport { StockService } from "./stock"\n\nvi.mock("unsplash-js", () => ({\n  createApi: vi.fn().mockReturnValue({\n    search: {\n      getPhotos: vi.fn().mockResolvedValue({\n        response: {\n          results: [{\n            urls: {\n              regular: "https://example.com/photo.jpg"\n            },\n            user: {\n              name: "Test User"\n            }\n          }]\n        }\n      })\n    }\n  })\n}))\n\nvi.mock("axios", () => ({\n  default: {\n    get: vi.fn().mockResolvedValue({\n      data: {\n        results: [{\n          url: "https://example.com/video.mp4"\n        }]\n      }\n    })\n  }\n}))\n\ndescribe("StockService", () => {\n  let service: StockService\n\n  beforeEach(() => {\n    service = new StockService({\n      unsplashAccessKey: "test-key",\n      storyblocksApiKey: "test-key"\n    })\n  })\n\n  it("should fetch image from Unsplash", async () => {\n    const result = await service.getImage("nature", {})\n    expect(result.url).toBeDefined()\n    expect(result.credit).toContain("Photo by")\n  })\n\n  it("should fetch video from Storyblocks", async () => {\n    const result = await service.getVideo("nature", {})\n    expect(result.url).toBeDefined()\n  })\n})
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { StockService } from './stock'
+
+vi.mock('unsplash-js', () => ({
+  createApi: vi.fn().mockReturnValue({
+    search: {
+      getPhotos: vi.fn().mockResolvedValue({
+        response: {
+          results: [
+            {
+              urls: {
+                regular: 'https://example.com/photo.jpg',
+              },
+              user: {
+                name: 'Test User',
+              },
+            },
+          ],
+        },
+      }),
+    },
+  }),
+}))
+
+vi.mock('axios', () => ({
+  default: {
+    get: vi.fn().mockResolvedValue({
+      data: {
+        results: [
+          {
+            url: 'https://example.com/video.mp4',
+          },
+        ],
+      },
+    }),
+  },
+}))
+
+describe('StockService', () => {
+  let service: StockService
+
+  beforeEach(() => {
+    service = new StockService({
+      unsplashAccessKey: 'test-key',
+      storyblocksApiKey: 'test-key',
+    })
+  })
+
+  it('should fetch image from Unsplash', async () => {
+    const result = await service.getImage('nature', {})
+    expect(result.url).toBeDefined()
+    expect(result.credit).toContain('Photo by')
+  })
+
+  it('should fetch video from Storyblocks', async () => {
+    const result = await service.getVideo('nature', {})
+    expect(result.url).toBeDefined()
+  })
+})
