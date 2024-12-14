@@ -7,6 +7,9 @@ export class MockBrowserService extends BrowserService {
   }
 
   async capture(url: string): Promise<Buffer> {
+    if (url.includes('nonexistent')) {
+      throw new Error('Failed to capture screenshot: Page not found')
+    }
     return Buffer.from([0, 1, 2, 3]) // Mock screenshot data
   }
 }
