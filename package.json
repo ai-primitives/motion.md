@@ -1,0 +1,17 @@
+{
+  "name": "motion.md",
+  "version": "1.0.0",
+  "description": "`motion.md` is a powerful npm package and CLI tool designed for creating dynamic, high-quality videos using Markdown syntax. Fully compatible with [Slidev](https://sli.dev) syntax, `motion.md` extends the syntax to include advanced configuration options in both the front matter and at the slide level, leveraging [Remotion](https://remotion.dev) to transform your slides into stunning videos. This makes `motion.md` ideal for presentations, tutorials, and content creation.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2"
+  }
+}
