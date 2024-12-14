@@ -10,27 +10,29 @@ export interface BrowserbaseConfig {
     height: number
     deviceScaleFactor: number
   }
+  baseUrl?: string
 }
 
 export interface StockConfig {
-  unsplashAccessKey: string
-  storyblocksApiKey: string
+  unsplashAccessKey?: string
+  storyblocksApiKey?: string
 }
 
 export interface AIConfig {
-  apiKey: string
+  apiKey?: string
   modelName?: string
 }
 
 export interface AnimationConfig {
-  apiKey: string
+  apiKey?: string
+  fps?: number
 }
 
 export interface ServiceConfig {
   browser?: BrowserbaseConfig
-  stock: StockConfig
-  ai: AIConfig
-  animation: AnimationConfig
+  stock?: StockConfig
+  ai?: AIConfig
+  animation?: AnimationConfig
 }
 
 export function initializeServices(config: ServiceConfig): {
@@ -39,33 +41,35 @@ export function initializeServices(config: ServiceConfig): {
   ai: AIService
   animation: AnimationService
 } {
-  if (!config.stock?.unsplashAccessKey) {
-    throw new Error('Unsplash access key is required')
+  const browserConfig = config.browser ?? {
+    headless: true,
+    defaultViewport: {
+      width: 1920,
+      height: 1080,
+      deviceScaleFactor: 2,
+    },
   }
-  if (!config.stock?.storyblocksApiKey) {
-    throw new Error('Storyblocks API key is required')
+
+  const stockConfig = {
+    unsplashAccessKey: config.stock?.unsplashAccessKey || process.env.UNSPLASH_ACCESS_KEY,
+    storyblocksApiKey: config.stock?.storyblocksApiKey || process.env.STORYBLOCKS_API_KEY,
   }
-  if (!config.ai?.apiKey) {
-    throw new Error('OpenAI API key is required')
+
+  const aiConfig = {
+    apiKey: config.ai?.apiKey || process.env.OPENAI_API_KEY,
+    modelName: config.ai?.modelName || 'gpt-4',
   }
-  if (!config.animation?.apiKey) {
-    throw new Error('MagicUI API key is required')
+
+  const animationConfig = {
+    apiKey: config.animation?.apiKey || process.env.MAGICUI_API_KEY,
+    fps: config.animation?.fps || 30,
   }
 
   return {
-    browser: new BrowserService(
-      config.browser ?? {
-        headless: true,
-        defaultViewport: {
-          width: 1920,
-          height: 1080,
-          deviceScaleFactor: 2,
-        },
-      },
-    ),
-    stock: new StockService(config.stock),
-    ai: new AIService(config.ai),
-    animation: new AnimationService(config.animation),
+    browser: new BrowserService(browserConfig),
+    stock: new StockService(stockConfig),
+    ai: new AIService(aiConfig),
+    animation: new AnimationService(animationConfig),
   }
 }
 
