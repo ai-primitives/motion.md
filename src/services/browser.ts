@@ -5,10 +5,10 @@ export class BrowserService {
   private browser: puppeteer.Browser | null = null
   private config: BrowserbaseConfig
 
-  constructor(config: BrowserbaseConfig) {
+  constructor(config?: BrowserbaseConfig) {
     this.config = {
-      headless: config.headless ?? true,
-      defaultViewport: config.defaultViewport ?? {
+      headless: config?.headless ?? true,
+      defaultViewport: config?.defaultViewport ?? {
         width: 1920,
         height: 1080,
         deviceScaleFactor: 2,

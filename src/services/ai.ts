@@ -5,9 +5,9 @@ export class AIService {
   private apiKey: string
   private modelName: string
 
-  constructor(config: AIConfig) {
-    this.apiKey = config.apiKey || process.env.OPENAI_API_KEY || ''
-    this.modelName = config.modelName || 'gpt-4'
+  constructor(config?: AIConfig) {
+    this.apiKey = config?.apiKey || process.env.OPENAI_API_KEY || ''
+    this.modelName = config?.modelName || 'gpt-4'
   }
 
   private async validateApiKey() {
@@ -37,7 +37,13 @@ export class AIService {
         },
       )
 
-      return response.data.data[0].url
+      const data = response.data as {
+        data: Array<{
+          url: string
+        }>
+      }
+
+      return data.data[0].url
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Failed to generate video: ${error.message}`)
@@ -67,7 +73,13 @@ export class AIService {
         },
       )
 
-      return response.data.data[0].url
+      const data = response.data as {
+        data: Array<{
+          url: string
+        }>
+      }
+
+      return data.data[0].url
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Failed to generate image: ${error.message}`)
@@ -96,7 +108,7 @@ export class AIService {
         },
       )
 
-      return Buffer.from(response.data)
+      return response.data as Buffer
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Failed to generate voiceover: ${error.message}`)

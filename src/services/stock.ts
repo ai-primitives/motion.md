@@ -37,16 +37,26 @@ export class StockService {
         },
       })
 
-      if (!response.data.results?.length) {
+      const data = response.data as {
+        results?: Array<{
+          url: string
+          preview_url: string
+          thumbnail_url: string
+          title: string
+          duration: number
+        }>
+      }
+
+      if (!data.results?.length) {
         throw new Error('No videos found')
       }
 
       return {
-        url: response.data.results[0].url,
-        preview: response.data.results[0].preview_url,
-        thumbnail: response.data.results[0].thumbnail_url,
-        title: response.data.results[0].title,
-        duration: response.data.results[0].duration,
+        url: data.results[0].url,
+        preview: data.results[0].preview_url,
+        thumbnail: data.results[0].thumbnail_url,
+        title: data.results[0].title,
+        duration: data.results[0].duration,
       }
     } catch (error) {
       if (error instanceof Error) {

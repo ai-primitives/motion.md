@@ -15,7 +15,15 @@ export class AnimationService {
           Authorization: `Bearer ${this.apiKey}`,
         },
       })
-      return response.data
+
+      const data = response.data as {
+        name: string
+        defaultDuration?: number
+        defaultEasing?: string
+        keyframes: string
+      }
+
+      return data
     } catch (error) {
       if (error instanceof Error) {
         if ((error as any).response?.status === 404) {
