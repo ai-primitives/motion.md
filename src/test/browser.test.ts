@@ -11,8 +11,8 @@ describe('Browser Rendering Tests', () => {
       defaultViewport: {
         width: 1920,
         height: 1080,
-        deviceScaleFactor: 2
-      }
+        deviceScaleFactor: 2,
+      },
     })
   })
 
@@ -29,9 +29,7 @@ describe('Browser Rendering Tests', () => {
   })
 
   it('should handle errors gracefully', async () => {
-    await expect(
-      browserService.capture('https://nonexistent.example.com')
-    ).rejects.toThrow()
+    await expect(browserService.capture('https://nonexistent.example.com')).rejects.toThrow()
   })
 
   it('should respect viewport settings', async () => {

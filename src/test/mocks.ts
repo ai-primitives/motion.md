@@ -19,7 +19,10 @@ export class MockStockService extends StockService {
     super(config)
   }
 
-  async getImage(query: string, quality: 'regular' | 'full' | 'thumb' = 'regular'): Promise<{
+  async getImage(
+    query: string,
+    quality: 'regular' | 'full' | 'thumb' = 'regular',
+  ): Promise<{
     url: string
     credit: string
     title: string
@@ -31,11 +34,14 @@ export class MockStockService extends StockService {
       credit: 'Photo by Mock Photographer on Unsplash',
       title: 'Mock Image',
       width: 1920,
-      height: 1080
+      height: 1080,
     }
   }
 
-  async getVideo(query: string, quality: '4k' | 'hd' | 'preview' = '4k'): Promise<{
+  async getVideo(
+    query: string,
+    quality: '4k' | 'hd' | 'preview' = '4k',
+  ): Promise<{
     url: string
     preview: string
     thumbnail: string
@@ -47,7 +53,7 @@ export class MockStockService extends StockService {
       preview: 'https://example.com/mock-video-preview.mp4',
       thumbnail: 'https://example.com/mock-video-thumb.jpg',
       title: 'Mock Video',
-      duration: 30
+      duration: 30,
     }
   }
 }
@@ -104,7 +110,7 @@ export class MockAnimationService extends AnimationService {
       duration: 1,
       easing: 'ease-in-out',
       keyframes: keyframesStr,
-      css
+      css,
     }
   }
 }

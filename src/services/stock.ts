@@ -17,7 +17,7 @@ export class StockService {
 
     this.unsplash = createApi({
       accessKey: config.unsplashAccessKey,
-      fetch: nodeFetch as any
+      fetch: nodeFetch as any,
     })
     this.storyblocksApiKey = config.storyblocksApiKey
   }
@@ -30,11 +30,11 @@ export class StockService {
           page: 1,
           per_page: 1,
           keywords: query,
-          content_type: quality
+          content_type: quality,
         },
         headers: {
-          Authorization: `Bearer ${this.storyblocksApiKey}`
-        }
+          Authorization: `Bearer ${this.storyblocksApiKey}`,
+        },
       })
 
       if (!response.data.results?.length) {
@@ -46,7 +46,7 @@ export class StockService {
         preview: response.data.results[0].preview_url,
         thumbnail: response.data.results[0].thumbnail_url,
         title: response.data.results[0].title,
-        duration: response.data.results[0].duration
+        duration: response.data.results[0].duration,
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -61,7 +61,7 @@ export class StockService {
       const result = await this.unsplash.search.getPhotos({
         query,
         perPage: 1,
-        orientation: 'landscape'
+        orientation: 'landscape',
       })
 
       if (!result.response?.results?.length) {
@@ -74,7 +74,7 @@ export class StockService {
         credit: `Photo by ${photo.user.name} on Unsplash`,
         title: photo.description || photo.alt_description || query,
         width: photo.width,
-        height: photo.height
+        height: photo.height,
       }
     } catch (error) {
       if (error instanceof Error) {

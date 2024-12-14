@@ -28,16 +28,11 @@ describe('AI Content Validation Tests', () => {
   })
 
   it('should handle content moderation', async () => {
-    await expect(
-      aiService.generateImage('inappropriate content')
-    ).resolves.toMatch(/^https:\/\//)
+    await expect(aiService.generateImage('inappropriate content')).resolves.toMatch(/^https:\/\//)
   })
 
   it('should maintain consistent style', async () => {
-    const [image1, image2] = await Promise.all([
-      aiService.generateImage('A sunny day'),
-      aiService.generateImage('A rainy day')
-    ])
+    const [image1, image2] = await Promise.all([aiService.generateImage('A sunny day'), aiService.generateImage('A rainy day')])
 
     expect(image1).toMatch(/^https:\/\//)
     expect(image2).toMatch(/^https:\/\//)

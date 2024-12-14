@@ -8,7 +8,7 @@ describe('Stock Media Tests', () => {
   beforeEach(() => {
     stockService = new MockStockService({
       unsplashAccessKey: 'mock-key',
-      storyblocksApiKey: 'mock-key'
+      storyblocksApiKey: 'mock-key',
     })
   })
 
@@ -32,11 +32,9 @@ describe('Stock Media Tests', () => {
 
   it('should handle different image quality options', async () => {
     const qualities: Array<'regular' | 'full' | 'thumb'> = ['regular', 'full', 'thumb']
-    const results = await Promise.all(
-      qualities.map(quality => stockService.getImage('test query', quality))
-    )
+    const results = await Promise.all(qualities.map((quality) => stockService.getImage('test query', quality)))
 
-    results.forEach(image => {
+    results.forEach((image) => {
       expect(image.url).toMatch(/^https:\/\//)
       expect(image.credit).toBeDefined()
     })
@@ -44,11 +42,9 @@ describe('Stock Media Tests', () => {
 
   it('should handle different video quality options', async () => {
     const qualities: Array<'4k' | 'hd' | 'preview'> = ['4k', 'hd', 'preview']
-    const results = await Promise.all(
-      qualities.map(quality => stockService.getVideo('test query', quality))
-    )
+    const results = await Promise.all(qualities.map((quality) => stockService.getVideo('test query', quality)))
 
-    results.forEach(video => {
+    results.forEach((video) => {
       expect(video.url).toMatch(/^https:\/\//)
       expect(video.preview).toBeDefined()
     })

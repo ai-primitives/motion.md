@@ -27,14 +27,14 @@ export class AIService {
           model: 'dall-e-3',
           n: 1,
           size: '1024x1024',
-          response_format: 'url'
+          response_format: 'url',
         },
         {
           headers: {
             Authorization: `Bearer ${this.apiKey}`,
-            'Content-Type': 'application/json'
-          }
-        }
+            'Content-Type': 'application/json',
+          },
+        },
       )
 
       return response.data.data[0].url
@@ -57,14 +57,14 @@ export class AIService {
           model: 'dall-e-3',
           n: 1,
           size: '1024x1024',
-          response_format: 'url'
+          response_format: 'url',
         },
         {
           headers: {
             Authorization: `Bearer ${this.apiKey}`,
-            'Content-Type': 'application/json'
-          }
-        }
+            'Content-Type': 'application/json',
+          },
+        },
       )
 
       return response.data.data[0].url
@@ -85,15 +85,15 @@ export class AIService {
         {
           input: text,
           model: 'tts-1',
-          voice: 'alloy'
+          voice: 'alloy',
         },
         {
           headers: {
             Authorization: `Bearer ${this.apiKey}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          responseType: 'arraybuffer'
-        }
+          responseType: 'arraybuffer',
+        },
       )
 
       return Buffer.from(response.data)

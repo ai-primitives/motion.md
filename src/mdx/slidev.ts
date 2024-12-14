@@ -1,1 +1,57 @@
-import { VFile } from "vfile"\n\nexport interface SlidevConfig {\n  theme?: string\n  highlighter?: string\n  lineNumbers?: boolean\n  drawings?: {\n    enabled?: boolean\n    persist?: boolean\n  }\n  transition?: string\n}\n\nexport function parseSlidevSyntax(file: VFile): SlidevConfig {\n  const content = String(file)\n  const configMatch = content.match(/^---\\n([\\s\\S]*?)\\n---/)\n  \n  if (!configMatch) {\n    return {}\n  }\n  \n  try {\n    // Convert Slidev frontmatter to our config format\n    const config: SlidevConfig = {}\n    const lines = configMatch[1].split("\\n")\n    \n    lines.forEach(line => {\n      const [key, value] = line.split(":").map(s => s.trim())\n      \n      switch (key) {\n        case "theme":\n          config.theme = value\n          break\n        case "highlighter":\n          config.highlighter = value\n          break\n        case "lineNumbers":\n          config.lineNumbers = value === "true"\n          break\n        case "drawings":\n          config.drawings = {\n            enabled: true,\n            persist: false\n          }\n          break\n        case "transition":\n          config.transition = value\n          break\n      }\n    })\n    \n    return config\n  } catch (error) {\n    console.error("Failed to parse Slidev config:", error)\n    return {}\n  }\n}
+import { VFile } from 'vfile'
+
+export interface SlidevConfig {
+  theme?: string
+  highlighter?: string
+  lineNumbers?: boolean
+  drawings?: {
+    enabled?: boolean
+    persist?: boolean
+  }
+  transition?: string
+}
+
+export function parseSlidevSyntax(file: VFile): SlidevConfig {
+  const content = String(file)
+  const configMatch = content.match(/^---\n([\s\S]*?)\n---/)
+
+  if (!configMatch) {
+    return {}
+  }
+
+  try {
+    // Convert Slidev frontmatter to our config format
+    const config: SlidevConfig = {}
+    const lines = configMatch[1].split('\n')
+
+    lines.forEach(line => {
+      const [key, value] = line.split(':').map(s => s.trim())
+
+      switch (key) {
+        case 'theme':
+          config.theme = value
+          break
+        case 'highlighter':
+          config.highlighter = value
+          break
+        case 'lineNumbers':
+          config.lineNumbers = value === 'true'
+          break
+        case 'drawings':
+          config.drawings = {
+            enabled: true,
+            persist: false
+          }
+          break
+        case 'transition':
+          config.transition = value
+          break
+      }
+    })
+
+    return config
+  } catch (error) {
+    console.error('Failed to parse Slidev config:', error)
+    return {}
+  }
+}

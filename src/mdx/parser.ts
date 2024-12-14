@@ -8,15 +8,17 @@ export interface MDXParserOptions {
 
 export async function parseMDX(content: string, options: MDXParserOptions = {}) {
   try {
-    const code = String(await compile(content, {
-      jsx: true,
-      jsxImportSource: 'react'
-    }))
+    const code = String(
+      await compile(content, {
+        jsx: true,
+        jsxImportSource: 'react',
+      }),
+    )
 
     // TODO: Implement component mapping and rendering
     return {
       code,
-      content: await renderToString(code)
+      content: await renderToString(code),
     }
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err)

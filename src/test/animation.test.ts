@@ -7,7 +7,7 @@ describe('Animation Service Tests', () => {
 
   beforeEach(() => {
     animationService = new MockAnimationService({
-      apiKey: 'mock-key'
+      apiKey: 'mock-key',
     })
   })
 
@@ -35,11 +35,9 @@ describe('Animation Service Tests', () => {
 
   it('should handle different animation types', async () => {
     const animations = ['fade', 'slide', 'bounce']
-    const results = await Promise.all(
-      animations.map(name => animationService.getAnimation(name))
-    )
+    const results = await Promise.all(animations.map((name) => animationService.getAnimation(name)))
 
-    results.forEach(animation => {
+    results.forEach((animation) => {
       expect(animation.name).toBeDefined()
       expect(animation.css).toBeDefined()
       expect(animation.keyframes).toBeDefined()

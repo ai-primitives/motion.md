@@ -12,8 +12,8 @@ export class AnimationService {
     try {
       const response = await axios.get(`https://magicui.design/api/animations/${name}`, {
         headers: {
-          Authorization: `Bearer ${this.apiKey}`
-        }
+          Authorization: `Bearer ${this.apiKey}`,
+        },
       })
       return response.data
     } catch (error) {
@@ -34,7 +34,7 @@ export class AnimationService {
       ...animationData,
       duration: animationData.defaultDuration || 1,
       easing: animationData.defaultEasing || 'ease-in-out',
-      css: this.generateAnimationCSS(animationData)
+      css: this.generateAnimationCSS(animationData),
     }
   }
 

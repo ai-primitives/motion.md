@@ -12,35 +12,35 @@ describe('Visual Regression Tests', () => {
       defaultViewport: {
         width: 1920,
         height: 1080,
-        deviceScaleFactor: 2
-      }
+        deviceScaleFactor: 2,
+      },
     },
     stock: {
       unsplashAccessKey: process.env.UNSPLASH_API_KEY || '',
-      storyblocksApiKey: process.env.STORYBLOCKS_API_KEY || ''
+      storyblocksApiKey: process.env.STORYBLOCKS_API_KEY || '',
     },
     ai: {
       apiKey: process.env.OPENAI_API_KEY || '',
-      modelName: 'gpt-4'
+      modelName: 'gpt-4',
     },
     animation: {
-      apiKey: process.env.MAGICUI_API_KEY || ''
-    }
+      apiKey: process.env.MAGICUI_API_KEY || '',
+    },
   })
 
   const testCases = [
     {
       name: 'basic-slide',
-      markdown: '# Basic Slide\nThis is a basic slide test.'
+      markdown: '# Basic Slide\nThis is a basic slide test.',
     },
     {
       name: 'code-block',
-      markdown: '# Code Test\n```js\nconsole.log("test")\n```'
+      markdown: '# Code Test\n```js\nconsole.log("test")\n```',
     },
     {
       name: 'image-slide',
-      markdown: '# Image Test\n![Test](https://example.com/test.jpg)'
-    }
+      markdown: '# Image Test\n![Test](https://example.com/test.jpg)',
+    },
   ]
 
   beforeAll(() => {
@@ -56,7 +56,7 @@ describe('Visual Regression Tests', () => {
       await render({
         input: testCase.markdown,
         output: outputPath,
-        services
+        services,
       })
 
       const snapshotPath = path.join(__dirname, 'output', `${testCase.name}-snapshot.png`)

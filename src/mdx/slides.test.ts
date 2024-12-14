@@ -1,1 +1,58 @@
-import { describe, it, expect } from "vitest"\nimport { VFile } from "vfile"\nimport { separateSlides } from "./slides"\n\ndescribe("Slide Separation", () => {\n  it("should separate slides by headings", () => {\n    const file = new VFile(`# Intro\nWelcome to the presentation\n\n# Slide 1\nContent for slide 1\n\n# Slide 2\nContent for slide 2\n\n# Outro\nThank you!`)\n\n    const slides = separateSlides(file)\n    expect(slides).toHaveLength(4)\n    expect(slides[0].type).toBe("intro")\n    expect(slides[3].type).toBe("outro")\n  })\n\n  it("should separate slides by horizontal rules", () => {\n    const file = new VFile(`# Presentation\n\n---\n\nSlide content 1\n\n---\n\nSlide content 2`)\n\n    const slides = separateSlides(file)\n    expect(slides).toHaveLength(3)\n  })\n\n  it("should handle mixed separators", () => {\n    const file = new VFile(`# Intro\nWelcome\n\n---\n\n# Slide 1\nContent\n\n---\n\n# Outro`)\n\n    const slides = separateSlides(file)\n    expect(slides).toHaveLength(3)\n    expect(slides[0].type).toBe("intro")\n    expect(slides[2].type).toBe("outro")\n  })\n})
+import { describe, it, expect } from 'vitest'
+import { VFile } from 'vfile'
+import { separateSlides } from './slides'
+
+describe('Slide Separation', () => {
+  it('should separate slides by headings', () => {
+    const file = new VFile(`# Intro
+Welcome to the presentation
+
+# Slide 1
+Content for slide 1
+
+# Slide 2
+Content for slide 2
+
+# Outro
+Thank you!`)
+
+    const slides = separateSlides(file)
+    expect(slides).toHaveLength(4)
+    expect(slides[0].type).toBe('intro')
+    expect(slides[3].type).toBe('outro')
+  })
+
+  it('should separate slides by horizontal rules', () => {
+    const file = new VFile(`# Presentation
+
+---
+
+Slide content 1
+
+---
+
+Slide content 2`)
+
+    const slides = separateSlides(file)
+    expect(slides).toHaveLength(3)
+  })
+
+  it('should handle mixed separators', () => {
+    const file = new VFile(`# Intro
+Welcome
+
+---
+
+# Slide 1
+Content
+
+---
+
+# Outro`)
+
+    const slides = separateSlides(file)
+    expect(slides).toHaveLength(3)
+    expect(slides[0].type).toBe('intro')
+    expect(slides[2].type).toBe('outro')
+  })
+})

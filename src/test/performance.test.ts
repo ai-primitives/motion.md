@@ -11,20 +11,20 @@ describe('Performance Tests', () => {
       defaultViewport: {
         width: 1920,
         height: 1080,
-        deviceScaleFactor: 2
-      }
+        deviceScaleFactor: 2,
+      },
     },
     stock: {
       unsplashAccessKey: process.env.UNSPLASH_API_KEY || '',
-      storyblocksApiKey: process.env.STORYBLOCKS_API_KEY || ''
+      storyblocksApiKey: process.env.STORYBLOCKS_API_KEY || '',
     },
     ai: {
       apiKey: process.env.OPENAI_API_KEY || '',
-      modelName: 'gpt-4'
+      modelName: 'gpt-4',
     },
     animation: {
-      apiKey: process.env.MAGICUI_API_KEY || ''
-    }
+      apiKey: process.env.MAGICUI_API_KEY || '',
+    },
   })
 
   const testMarkdown = `
@@ -49,7 +49,7 @@ console.log('Hello World')
     await render({
       input: testMarkdown,
       output: path.join(__dirname, 'output', 'perf-test.mp4'),
-      services
+      services,
     })
 
     const endTime = performance.now()
@@ -65,7 +65,7 @@ console.log('Hello World')
     await render({
       input: testMarkdown,
       output: path.join(__dirname, 'output', 'memory-test.mp4'),
-      services
+      services,
     })
 
     const finalMemory = process.memoryUsage().heapUsed

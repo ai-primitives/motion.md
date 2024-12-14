@@ -53,17 +53,19 @@ export function initializeServices(config: ServiceConfig): {
   }
 
   return {
-    browser: new BrowserService(config.browser ?? {
-      headless: true,
-      defaultViewport: {
-        width: 1920,
-        height: 1080,
-        deviceScaleFactor: 2
-      }
-    }),
+    browser: new BrowserService(
+      config.browser ?? {
+        headless: true,
+        defaultViewport: {
+          width: 1920,
+          height: 1080,
+          deviceScaleFactor: 2,
+        },
+      },
+    ),
     stock: new StockService(config.stock),
     ai: new AIService(config.ai),
-    animation: new AnimationService(config.animation)
+    animation: new AnimationService(config.animation),
   }
 }
 

@@ -11,8 +11,8 @@ export class BrowserService {
       defaultViewport: config.defaultViewport ?? {
         width: 1920,
         height: 1080,
-        deviceScaleFactor: 2
-      }
+        deviceScaleFactor: 2,
+      },
     }
   }
 
@@ -20,7 +20,7 @@ export class BrowserService {
     if (!this.browser) {
       this.browser = await puppeteer.launch({
         headless: this.config.headless,
-        defaultViewport: this.config.defaultViewport
+        defaultViewport: this.config.defaultViewport,
       })
     }
     return this.browser

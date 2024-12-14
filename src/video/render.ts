@@ -36,8 +36,8 @@ export async function render(options: RenderOptions): Promise<void> {
       defaultProps: {},
       props: {
         services,
-        markdown: input
-      }
+        markdown: input,
+      },
     }
 
     await renderMedia({
@@ -54,12 +54,12 @@ export async function render(options: RenderOptions): Promise<void> {
         headless: true,
         ignoreCertificateErrors: false,
         disableWebSecurity: false,
-        enableMultiProcessOnLinux: true
+        enableMultiProcessOnLinux: true,
       },
       videoBitrate: '20M',
       audioBitrate: '256k',
       timeoutInMilliseconds: 30000,
-      scale: 2
+      scale: 2,
     })
   } catch (err) {
     if (err instanceof Error) {

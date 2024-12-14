@@ -1,1 +1,48 @@
-import { describe, it, expect } from "vitest"\nimport { VFile } from "vfile"\nimport { parseFrontmatter } from "./frontmatter"\n\ndescribe("Frontmatter Parser", () => {\n  it("should parse basic frontmatter", () => {\n    const file = new VFile({\n      value: `---\ntitle: Test Presentation\nduration: 300\nfps: 30\n---\n\n# Content`\n    })\n\n    const result = parseFrontmatter(file)\n    expect(result.title).toBe("Test Presentation")\n    expect(result.duration).toBe(300)\n    expect(result.fps).toBe(30)\n  })\n\n  it("should handle complex frontmatter", () => {\n    const file = new VFile({\n      value: `---\ntitle: Advanced Demo\nresolution:\n  width: 1920\n  height: 1080\ntheme: dark\ntransitions:\n  - type: fade\n    duration: 0.5\nai:\n  model: gpt-4\n  voice: alloy\n---\n\n# Content`\n    })\n\n    const result = parseFrontmatter(file)\n    expect(result.resolution).toEqual({ width: 1920, height: 1080 })\n    expect(result.theme).toBe("dark")\n    expect(result.transitions).toHaveLength(1)\n    expect(result.ai).toBeDefined()\n  })\n})
+import { describe, it, expect } from 'vitest'
+import { VFile } from 'vfile'
+import { parseFrontmatter } from './frontmatter'
+
+describe('Frontmatter Parser', () => {
+  it('should parse basic frontmatter', () => {
+    const file = new VFile({
+      value: `---
+title: Test Presentation
+duration: 300
+fps: 30
+---
+
+# Content`
+    })
+
+    const result = parseFrontmatter(file)
+    expect(result.title).toBe('Test Presentation')
+    expect(result.duration).toBe(300)
+    expect(result.fps).toBe(30)
+  })
+
+  it('should handle complex frontmatter', () => {
+    const file = new VFile({
+      value: `---
+title: Advanced Demo
+resolution:
+  width: 1920
+  height: 1080
+theme: dark
+transitions:
+  - type: fade
+    duration: 0.5
+ai:
+  model: gpt-4
+  voice: alloy
+---
+
+# Content`
+    })
+
+    const result = parseFrontmatter(file)
+    expect(result.resolution).toEqual({ width: 1920, height: 1080 })
+    expect(result.theme).toBe('dark')
+    expect(result.transitions).toHaveLength(1)
+    expect(result.ai).toBeDefined()
+  })
+})
