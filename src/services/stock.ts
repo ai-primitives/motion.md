@@ -1,25 +1,28 @@
 import { createApi } from 'unsplash-js'
 import nodeFetch from 'node-fetch'
 import axios from 'axios'
-import { StockVideoConfig, StockImageConfig } from './index'
+import { StockConfig } from './index'
 
 export class StockService {
   private unsplash
   private storyblocksApiKey: string
 
-  constructor(config: { unsplashAccessKey?: string; storyblocksApiKey?: string }) {
-    this.unsplash = createApi({
-      accessKey: config.unsplashAccessKey || process.env.UNSPLASH_ACCESS_KEY || '',
-      fetch: nodeFetch as any
-    })
-    this.storyblocksApiKey = config.storyblocksApiKey || process.env.STORYBLOCKS_API_KEY || ''
-  }
-
-  async getVideo(query: string, config: StockVideoConfig) {
-    if (!this.storyblocksApiKey) {
+  constructor(config: StockConfig) {
+    if (!config.unsplashAccessKey) {
+      throw new Error('Unsplash access key is required')
+    }
+    if (!config.storyblocksApiKey) {
       throw new Error('Storyblocks API key is required')
     }
 
+    this.unsplash = createApi({
+      accessKey: config.unsplashAccessKey,
+      fetch: nodeFetch as any
+    })
+    this.storyblocksApiKey = config.storyblocksApiKey
+  }
+
+  async getVideo(query: string, quality: '4k' | 'hd' | 'preview' = '4k') {
     try {
       const response = await axios.get('https://api.storyblocks.com/api/v1/video/search', {
         params: {
@@ -27,7 +30,7 @@ export class StockService {
           page: 1,
           per_page: 1,
           keywords: query,
-          content_type: config.quality || '4k'
+          content_type: quality
         },
         headers: {
           Authorization: `Bearer ${this.storyblocksApiKey}`
@@ -38,7 +41,13 @@ export class StockService {
         throw new Error('No videos found')
       }
 
-      return response.data.results[0]
+      return {
+        url: response.data.results[0].url,
+        preview: response.data.results[0].preview_url,
+        thumbnail: response.data.results[0].thumbnail_url,
+        title: response.data.results[0].title,
+        duration: response.data.results[0].duration
+      }
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Failed to fetch video: ${error.message}`)
@@ -47,7 +56,7 @@ export class StockService {
     }
   }
 
-  async getImage(query: string, config: StockImageConfig) {
+  async getImage(query: string, quality: 'regular' | 'full' | 'thumb' = 'regular') {
     try {
       const result = await this.unsplash.search.getPhotos({
         query,
@@ -61,8 +70,11 @@ export class StockService {
 
       const photo = result.response.results[0]
       return {
-        url: photo.urls[config.quality || 'regular'],
-        credit: `Photo by ${photo.user.name} on Unsplash`
+        url: photo.urls[quality],
+        credit: `Photo by ${photo.user.name} on Unsplash`,
+        title: photo.description || photo.alt_description || query,
+        width: photo.width,
+        height: photo.height
       }
     } catch (error) {
       if (error instanceof Error) {

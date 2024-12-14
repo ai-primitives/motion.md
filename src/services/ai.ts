@@ -1,11 +1,13 @@
 import axios from 'axios'
-import { AIGenerationConfig } from './index'
+import { AIConfig } from './index'
 
 export class AIService {
   private apiKey: string
+  private modelName: string
 
-  constructor(config: { apiKey?: string }) {
+  constructor(config: AIConfig) {
     this.apiKey = config.apiKey || process.env.OPENAI_API_KEY || ''
+    this.modelName = config.modelName || 'gpt-4'
   }
 
   private async validateApiKey() {
@@ -14,7 +16,7 @@ export class AIService {
     }
   }
 
-  async generateVideo(prompt: string, config: AIGenerationConfig) {
+  async generateVideo(prompt: string) {
     await this.validateApiKey()
 
     try {
@@ -22,7 +24,7 @@ export class AIService {
         'https://api.openai.com/v1/images/generations',
         {
           prompt,
-          model: config.model || 'dall-e-3',
+          model: 'dall-e-3',
           n: 1,
           size: '1024x1024',
           response_format: 'url'
@@ -44,7 +46,7 @@ export class AIService {
     }
   }
 
-  async generateImage(prompt: string, config: AIGenerationConfig) {
+  async generateImage(prompt: string) {
     await this.validateApiKey()
 
     try {
@@ -52,7 +54,7 @@ export class AIService {
         'https://api.openai.com/v1/images/generations',
         {
           prompt,
-          model: config.model || 'dall-e-3',
+          model: 'dall-e-3',
           n: 1,
           size: '1024x1024',
           response_format: 'url'
@@ -74,7 +76,7 @@ export class AIService {
     }
   }
 
-  async generateVoiceover(text: string, config: AIGenerationConfig) {
+  async generateVoiceover(text: string) {
     await this.validateApiKey()
 
     try {
@@ -82,7 +84,7 @@ export class AIService {
         'https://api.openai.com/v1/audio/speech',
         {
           input: text,
-          model: config.model || 'tts-1',
+          model: 'tts-1',
           voice: 'alloy'
         },
         {

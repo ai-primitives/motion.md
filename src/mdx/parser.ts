@@ -1,1 +1,25 @@
-import { compile } from "@mdx-js/mdx"\nimport { renderToString } from "react-dom/server"\nimport * as runtime from "react/jsx-runtime"\n\nexport interface MDXParserOptions {\n  components?: Record<string, React.ComponentType>\n}\n\nexport async function parseMDX(content: string, options: MDXParserOptions = {}) {\n  try {\n    const code = String(await compile(content, {\n      jsx: true,\n      jsxImportSource: "react"\n    }))\n\n    // TODO: Implement component mapping and rendering\n    return {\n      code,\n      content: await renderToString(code)\n    }\n  } catch (error) {\n    throw new Error(`Failed to parse MDX: ${error.message}`)\n  }\n}
+import { compile } from '@mdx-js/mdx'
+import { renderToString } from 'react-dom/server'
+import * as runtime from 'react/jsx-runtime'
+
+export interface MDXParserOptions {
+  components?: Record<string, React.ComponentType>
+}
+
+export async function parseMDX(content: string, options: MDXParserOptions = {}) {
+  try {
+    const code = String(await compile(content, {
+      jsx: true,
+      jsxImportSource: 'react'
+    }))
+
+    // TODO: Implement component mapping and rendering
+    return {
+      code,
+      content: await renderToString(code)
+    }
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err)
+    throw new Error(`Failed to parse MDX: ${message}`)
+  }
+}

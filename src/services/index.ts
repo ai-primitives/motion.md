@@ -1,29 +1,70 @@
+import { BrowserService } from './browser'
+import { StockService } from './stock'
+import { AIService } from './ai'
+import { AnimationService } from './animation'
+
 export interface BrowserbaseConfig {
-  width: number
-  height: number
-  deviceScaleFactor?: number
+  headless?: boolean
+  defaultViewport?: {
+    width: number
+    height: number
+    deviceScaleFactor: number
+  }
 }
 
-export interface StockVideoConfig {
-  quality?: '4k' | 'hd' | 'preview'
+export interface StockConfig {
+  unsplashAccessKey: string
+  storyblocksApiKey: string
 }
 
-export interface StockImageConfig {
-  quality?: 'regular' | 'full' | 'thumb'
-}
-
-export interface AIGenerationConfig {
-  model?: string
-  provider?: 'openai'
+export interface AIConfig {
+  apiKey: string
+  modelName?: string
 }
 
 export interface AnimationConfig {
-  duration?: number
-  easing?: string
+  apiKey: string
 }
 
-// Export service classes
-export { BrowserService } from './browser'
-export { StockService } from './stock'
-export { AIService } from './ai'
-export { AnimationService } from './animation'
+export interface ServiceConfig {
+  browser?: BrowserbaseConfig
+  stock: StockConfig
+  ai: AIConfig
+  animation: AnimationConfig
+}
+
+export function initializeServices(config: ServiceConfig): {
+  browser: BrowserService
+  stock: StockService
+  ai: AIService
+  animation: AnimationService
+} {
+  if (!config.stock?.unsplashAccessKey) {
+    throw new Error('Unsplash access key is required')
+  }
+  if (!config.stock?.storyblocksApiKey) {
+    throw new Error('Storyblocks API key is required')
+  }
+  if (!config.ai?.apiKey) {
+    throw new Error('OpenAI API key is required')
+  }
+  if (!config.animation?.apiKey) {
+    throw new Error('MagicUI API key is required')
+  }
+
+  return {
+    browser: new BrowserService(config.browser ?? {
+      headless: true,
+      defaultViewport: {
+        width: 1920,
+        height: 1080,
+        deviceScaleFactor: 2
+      }
+    }),
+    stock: new StockService(config.stock),
+    ai: new AIService(config.ai),
+    animation: new AnimationService(config.animation)
+  }
+}
+
+export { BrowserService, StockService, AIService, AnimationService }

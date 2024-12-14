@@ -3,32 +3,35 @@ import { BrowserbaseConfig } from './index'
 
 export class BrowserService {
   private browser: puppeteer.Browser | null = null
+  private config: BrowserbaseConfig
+
+  constructor(config: BrowserbaseConfig) {
+    this.config = {
+      headless: config.headless ?? true,
+      defaultViewport: config.defaultViewport ?? {
+        width: 1920,
+        height: 1080,
+        deviceScaleFactor: 2
+      }
+    }
+  }
 
   private async initialize() {
     if (!this.browser) {
       this.browser = await puppeteer.launch({
-        headless: true,
-        defaultViewport: {
-          width: 1920,
-          height: 1080,
-          deviceScaleFactor: 2
-        }
+        headless: this.config.headless,
+        defaultViewport: this.config.defaultViewport
       })
     }
     return this.browser
   }
 
-  async capture(url: string, config: BrowserbaseConfig) {
+  async capture(url: string) {
     const browser = await this.initialize()
     const page = await browser.newPage()
 
     try {
-      await page.setViewport({
-        width: config.width,
-        height: config.height,
-        deviceScaleFactor: config.deviceScaleFactor || 2
-      })
-
+      await page.setViewport(this.config.defaultViewport!)
       await page.goto(url, { waitUntil: 'networkidle0' })
       return await page.screenshot({ type: 'png' })
     } catch (error) {

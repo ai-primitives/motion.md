@@ -1,1 +1,26 @@
-import { matter } from "vfile-matter"\nimport type { VFile } from "vfile"\n\nexport interface FrontmatterData {\n  title?: string\n  duration?: number\n  fps?: number\n  resolution?: {\n    width: number\n    height: number\n  }\n  theme?: string\n  transitions?: {\n    type: string\n    duration: number\n  }[]\n  ai?: {\n    model?: string\n    voice?: string\n  }\n}\n\nexport function parseFrontmatter(file: VFile): FrontmatterData {\n  matter(file, { strip: true })\n  return file.data.matter as FrontmatterData\n}
+import { matter } from 'vfile-matter'
+import type { VFile } from 'vfile'
+
+export interface FrontmatterData {
+  title?: string
+  duration?: number
+  fps?: number
+  resolution?: {
+    width: number
+    height: number
+  }
+  theme?: string
+  transitions?: {
+    type: string
+    duration: number
+  }[]
+  ai?: {
+    model?: string
+    voice?: string
+  }
+}
+
+export function parseFrontmatter(file: VFile): FrontmatterData {
+  matter(file, { strip: true })
+  return file.data.matter as FrontmatterData
+}

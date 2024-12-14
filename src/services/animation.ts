@@ -2,9 +2,19 @@ import axios from 'axios'
 import { AnimationConfig } from './index'
 
 export class AnimationService {
+  private apiKey: string
+
+  constructor(config: AnimationConfig) {
+    this.apiKey = config.apiKey || process.env.MAGICUI_API_KEY || ''
+  }
+
   private async fetchAnimationData(name: string) {
     try {
-      const response = await axios.get(`https://magicui.design/api/animations/${name}`)
+      const response = await axios.get(`https://magicui.design/api/animations/${name}`, {
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`
+        }
+      })
       return response.data
     } catch (error) {
       if (error instanceof Error) {
@@ -17,20 +27,20 @@ export class AnimationService {
     }
   }
 
-  async getAnimation(name: string, config: AnimationConfig) {
+  async getAnimation(name: string) {
     const animationData = await this.fetchAnimationData(name)
 
     return {
       ...animationData,
-      duration: config.duration || animationData.defaultDuration || 1,
-      easing: config.easing || animationData.defaultEasing || 'ease-in-out',
-      css: this.generateAnimationCSS(animationData, config)
+      duration: animationData.defaultDuration || 1,
+      easing: animationData.defaultEasing || 'ease-in-out',
+      css: this.generateAnimationCSS(animationData)
     }
   }
 
-  private generateAnimationCSS(animationData: any, config: AnimationConfig) {
-    const duration = config.duration || animationData.defaultDuration || 1
-    const easing = config.easing || animationData.defaultEasing || 'ease-in-out'
+  private generateAnimationCSS(animationData: any) {
+    const duration = animationData.defaultDuration || 1
+    const easing = animationData.defaultEasing || 'ease-in-out'
 
     return `
       @keyframes ${animationData.name} {
