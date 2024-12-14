@@ -60,6 +60,7 @@
     "node-fetch": "^2.7.0",
     "puppeteer": "^23.10.4",
     "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "remotion": "^4.0.240",
     "unsplash-js": "^7.0.19",
     "vfile-matter": "^5.0.0"

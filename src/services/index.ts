@@ -24,7 +24,6 @@ export interface AIConfig {
 }
 
 export interface AnimationConfig {
-  apiKey?: string
   fps?: number
 }
 
@@ -61,7 +60,6 @@ export function initializeServices(config: ServiceConfig): {
   }
 
   const animationConfig = {
-    apiKey: config.animation?.apiKey || process.env.MAGICUI_API_KEY,
     fps: config.animation?.fps || 30,
   }
 

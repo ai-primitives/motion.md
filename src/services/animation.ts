@@ -1,54 +1,36 @@
-import axios from 'axios'
-import { AnimationConfig } from './index'
+import { interpolate } from 'remotion'
+import type { AnimationConfig } from './index'
 
 export class AnimationService {
-  private apiKey: string
+  private fps: number
 
   constructor(config: AnimationConfig) {
-    this.apiKey = config.apiKey || process.env.MAGICUI_API_KEY || ''
+    this.fps = config.fps || 30
   }
 
-  private async fetchAnimationData(name: string) {
-    try {
-      const response = await axios.get(`https://magicui.design/api/animations/${name}`, {
-        headers: {
-          Authorization: `Bearer ${this.apiKey}`,
-        },
-      })
-      return response.data
-    } catch (error) {
-      if (error instanceof Error) {
-        if ((error as any).response?.status === 404) {
-          throw new Error(`Animation "${name}" not found`)
+  getAnimation(name: string, frame: number, options?: { duration?: number; easing?: string }) {
+    const duration = options?.duration || 1
+    const frameRange = [0, this.fps * duration]
+
+    switch (name) {
+      case 'fadeIn':
+        return {
+          opacity: interpolate(frame, frameRange, [0, 1], { extrapolateRight: 'clamp' }),
         }
-        throw new Error(`Failed to fetch animation: ${error.message}`)
-      }
-      throw new Error('Failed to fetch animation: Unknown error')
+      case 'scale':
+        return {
+          transform: `scale(${interpolate(frame, frameRange, [1, 2], { extrapolateRight: 'clamp' })})`,
+        }
+      case 'slideIn':
+        return {
+          transform: `translateX(${interpolate(frame, frameRange, [-100, 0], { extrapolateRight: 'clamp' })}%)`,
+        }
+      case 'rotate':
+        return {
+          transform: `rotate(${interpolate(frame, frameRange, [0, 360], { extrapolateRight: 'clamp' })}deg)`,
+        }
+      default:
+        throw new Error(`Animation "${name}" not found`)
     }
-  }
-
-  async getAnimation(name: string) {
-    const animationData = await this.fetchAnimationData(name)
-
-    return {
-      ...animationData,
-      duration: animationData.defaultDuration || 1,
-      easing: animationData.defaultEasing || 'ease-in-out',
-      css: this.generateAnimationCSS(animationData),
-    }
-  }
-
-  private generateAnimationCSS(animationData: any) {
-    const duration = animationData.defaultDuration || 1
-    const easing = animationData.defaultEasing || 'ease-in-out'
-
-    return `
-      @keyframes ${animationData.name} {
-        ${animationData.keyframes}
-      }
-      .${animationData.name} {
-        animation: ${animationData.name} ${duration}s ${easing}
-      }
-    `
   }
 }
