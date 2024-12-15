@@ -82,6 +82,18 @@ resolution:
       expect(result.content).toContain('Voiceover')
       expect(result.content).toContain('Hello world')
     })
+
+    it('should handle multiple components in a single MDX', async () => {
+      const content = `
+<Browser url="https://example.com" />
+<Video src="video.mp4" type="storyblocks" />
+<Image src="image.jpg" type="unsplash" />
+`
+      const result = await parseMDX(content)
+      expect(result.content).toContain('Browser')
+      expect(result.content).toContain('Video')
+      expect(result.content).toContain('Image')
+    })
   })
 
   describe('Error Handling', () => {
@@ -91,9 +103,23 @@ resolution:
     })
 
     it('should handle invalid component props', async () => {
-      const content = '<Browser invalidProp="test" />'
-      const result = await parseMDX(content)
-      expect(result.content).toContain('Browser')
+      const content = '<Browser width={-100} />'
+      await expect(parseMDX(content)).rejects.toThrow('Failed to parse MDX: Browser width must be a positive number')
+    })
+
+    it('should handle invalid video type', async () => {
+      const content = '<Video type="invalid" />'
+      await expect(parseMDX(content)).rejects.toThrow('Failed to parse MDX: Video type must be either "storyblocks" or "ai"')
+    })
+
+    it('should handle invalid animation duration', async () => {
+      const content = '<Animation type="magicui" duration={-1} />'
+      await expect(parseMDX(content)).rejects.toThrow('Failed to parse MDX: Animation duration must be a positive number')
+    })
+
+    it('should handle missing required props', async () => {
+      const content = '<Animation />'
+      await expect(parseMDX(content)).rejects.toThrow('Failed to parse MDX: Animation type must be "magicui"')
     })
 
     it('should handle malformed frontmatter', async () => {

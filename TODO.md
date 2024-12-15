@@ -4,7 +4,7 @@
 
 ### Phase 1: Core Infrastructure
 - [ ] Project Setup
-  - [ ] Configure TypeScript
+  - [x] Configure TypeScript
   - [ ] Set up Prettier with required configuration
     ```json
     {
@@ -14,17 +14,17 @@
     }
     ```
   - [ ] Initialize build system
-  - [ ] Set up test framework
+  - [x] Set up test framework
 
 - [ ] Markdown Processing
-  - [ ] Implement MDX parser integration
-  - [ ] Add frontmatter handling
+  - [x] Implement MDX parser integration
+  - [x] Add frontmatter handling
   - [ ] Create slide separation logic
   - [ ] Support Slidev-compatible syntax
 
 - [ ] Base Component System
-  - [ ] Define component interfaces
-  - [ ] Create base component implementations
+  - [x] Define component interfaces
+  - [x] Create base component implementations
   - [ ] Implement props validation
 
 ### Phase 2: Video Generation
