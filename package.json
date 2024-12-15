@@ -32,6 +32,7 @@
     "@types/testing-library__jest-dom": "^5.14.9",
     "@types/yaml": "^1.9.6",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "2.1.8",
     "gray-matter": "^4.0.3",
     "jsdom": "^25.0.1",
     "prettier": "^3.4.2",

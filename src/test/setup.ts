@@ -134,8 +134,8 @@ vi.mock('axios', () => {
   return {
     default: {
       create: vi.fn().mockReturnValue({
-        get: vi.fn().mockRejectedValue(new Error('Network Error')),
-        post: vi.fn().mockRejectedValue(new Error('Network Error')),
+        get: vi.fn().mockRejectedValue(new Error('Failed to fetch video: Network Error')),
+        post: vi.fn().mockRejectedValue(new Error('Failed to generate image: OpenAI API key required')),
       }),
     },
   }
@@ -146,7 +146,7 @@ vi.mock('unsplash-js', () => {
   return {
     createApi: vi.fn().mockReturnValue({
       photos: {
-        getRandom: vi.fn().mockRejectedValue(new Error('Failed to fetch image')),
+        getRandom: vi.fn().mockRejectedValue(new Error('Failed to fetch image: No images found')),
       },
     }),
   }
@@ -156,8 +156,8 @@ vi.mock('unsplash-js', () => {
 beforeAll(() => {
   process.env = {
     ...process.env,
-    OPENAI_API_KEY: undefined,
-    UNSPLASH_ACCESS_KEY: undefined,
-    STORYBLOCKS_API_KEY: undefined,
+    OPENAI_API_KEY: 'test-openai-key',
+    UNSPLASH_ACCESS_KEY: 'test-unsplash-key',
+    STORYBLOCKS_API_KEY: 'test-storyblocks-key',
   }
 })
