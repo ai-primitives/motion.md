@@ -6,6 +6,16 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: ['./src/test/setup.ts']
+    setupFiles: ['./src/test/setup.ts'],
+    deps: {
+      inline: [
+        '@mdx-js/mdx',
+        'unified',
+        'remark-parse',
+        'remark-mdx',
+        'remark-frontmatter',
+        'remark-gfm'
+      ]
+    }
   }
 })

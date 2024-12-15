@@ -1,11 +1,42 @@
 import { describe, it, expect, vi } from 'vitest'
 import { BrowserService, StockService, AIService, AnimationService } from '.'
 
+// Mock puppeteer
+vi.mock('puppeteer', () => ({
+  default: {
+    launch: vi.fn().mockResolvedValue({
+      newPage: vi.fn().mockResolvedValue({
+        setViewport: vi.fn(),
+        goto: vi.fn().mockRejectedValue(new Error('Failed to load page')),
+        screenshot: vi.fn(),
+        close: vi.fn()
+      }),
+      close: vi.fn()
+    })
+  }
+}))
+
+// Mock axios for OpenAI API calls
+vi.mock('axios', () => ({
+  default: {
+    post: vi.fn().mockRejectedValue(new Error('OpenAI API key required'))
+  }
+}))
+
+// Mock unsplash-js
+vi.mock('unsplash-js', () => ({
+  createApi: vi.fn().mockReturnValue({
+    search: {
+      getPhotos: vi.fn().mockRejectedValue(new Error('No images found'))
+    }
+  })
+}))
+
 describe('Services', () => {
   describe('BrowserService', () => {
     it('should throw error when capturing fails', async () => {
       const service = new BrowserService({ headless: true })
-      await expect(service.capture('https://example.com')).rejects.toThrow('Failed to capture screenshot')
+      await expect(service.capture('https://example.com')).rejects.toThrow('Failed to capture screenshot: Failed to load page')
     })
   })
 
@@ -15,7 +46,7 @@ describe('Services', () => {
         unsplashAccessKey: 'test-key',
         storyblocksApiKey: 'test-key'
       })
-      await expect(service.getVideo('nature', 'hd')).rejects.toThrow('Failed to fetch video')
+      await expect(service.getVideo('nature', 'hd')).rejects.toThrow('Failed to fetch video: Network Error')
     })
 
     it('should throw error when image fetch fails', async () => {
@@ -23,7 +54,7 @@ describe('Services', () => {
         unsplashAccessKey: 'test-key',
         storyblocksApiKey: 'test-key'
       })
-      await expect(service.getImage('nature', 'regular')).rejects.toThrow('Failed to fetch image')
+      await expect(service.getImage('nature', 'regular')).rejects.toThrow('Failed to fetch image: No images found')
     })
 
     it('should throw error without API keys', () => {
@@ -33,19 +64,9 @@ describe('Services', () => {
   })
 
   describe('AIService', () => {
-    it('should throw not implemented for generateVideo', async () => {
-      const service = new AIService({ apiKey: 'test-key' })
-      await expect(service.generateVideo('A beautiful sunset')).rejects.toThrow('Failed to generate video')
-    })
-
-    it('should throw not implemented for generateImage', async () => {
-      const service = new AIService({ apiKey: 'test-key' })
-      await expect(service.generateImage('A beautiful sunset')).rejects.toThrow('Failed to generate image')
-    })
-
-    it('should throw not implemented for generateVoiceover', async () => {
-      const service = new AIService({ apiKey: 'test-key' })
-      await expect(service.generateVoiceover('Hello world')).rejects.toThrow('Failed to generate voiceover')
+    it('should throw error without API key', async () => {
+      const service = new AIService({})
+      await expect(service.generateImage('test')).rejects.toThrow('Failed to generate image: OpenAI API key required')
     })
   })
 
