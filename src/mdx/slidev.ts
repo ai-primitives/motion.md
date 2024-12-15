@@ -24,8 +24,8 @@ export function parseSlidevSyntax(file: VFile): SlidevConfig {
     const config: SlidevConfig = {}
     const lines = configMatch[1].split('\n')
 
-    lines.forEach(line => {
-      const [key, value] = line.split(':').map(s => s.trim())
+    lines.forEach((line) => {
+      const [key, value] = line.split(':').map((s) => s.trim())
 
       switch (key) {
         case 'theme':
@@ -40,7 +40,7 @@ export function parseSlidevSyntax(file: VFile): SlidevConfig {
         case 'drawings':
           config.drawings = {
             enabled: true,
-            persist: false
+            persist: false,
           }
           break
         case 'transition':

@@ -11,7 +11,7 @@ duration: 300
 fps: 30
 ---
 
-# Content`
+# Content`,
     })
 
     const result = parseFrontmatter(file)
@@ -36,7 +36,7 @@ ai:
   voice: alloy
 ---
 
-# Content`
+# Content`,
     })
 
     const result = parseFrontmatter(file)

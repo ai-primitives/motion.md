@@ -27,18 +27,14 @@ export function separateSlides(file: VFile): Slide[] {
       let type: Slide['type'] = 'content'
       if (sectionIndex === 0 && headingIndex === 0 && trimmedHeading.toLowerCase().includes('intro')) {
         type = 'intro'
-      } else if (
-        sectionIndex === sections.length - 1 &&
-        headingIndex === headings.length - 1 &&
-        trimmedHeading.toLowerCase().includes('outro')
-      ) {
+      } else if (sectionIndex === sections.length - 1 && headingIndex === headings.length - 1 && trimmedHeading.toLowerCase().includes('outro')) {
         type = 'outro'
       }
 
       slides.push({
         content: trimmedHeading,
         type,
-        duration: undefined // Will be calculated based on content/voiceover later
+        duration: undefined, // Will be calculated based on content/voiceover later
       })
     })
   })

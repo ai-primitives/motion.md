@@ -15,7 +15,6 @@ describe('AnimationService', () => {
   })
 
   it('should handle invalid animation type', () => {
-    expect(() => service.getAnimation('invalid', 0, { duration: 1 }))
-      .toThrow('Animation "invalid" not found')
+    expect(() => service.getAnimation('invalid', 0, { duration: 1 })).toThrow('Animation "invalid" not found')
   })
 })
