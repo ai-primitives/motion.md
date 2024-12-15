@@ -3,85 +3,139 @@ import { parseMDX } from './parser'
 import { Browser, Video, Image, Animation, Voiceover } from '../components'
 
 describe('MDX Parser', () => {
-  it('should parse basic MDX content', async () => {
-    const result = await parseMDX('# Hello World')
-    expect(result.code).toBeDefined()
-    expect(result.content).toBeDefined()
-    expect(result.slides).toHaveLength(1)
+  describe('Basic MDX Parsing', () => {
+    it('should parse basic MDX content', async () => {
+      const content = '# Hello World\n\nThis is a test'
+      const result = await parseMDX(content)
+      expect(result.content).toContain('Hello World')
+      expect(result.content).toContain('This is a test')
+    })
+
+    it('should handle empty content', async () => {
+      const content = ''
+      const result = await parseMDX(content)
+      expect(result.content).toBe('')
+      expect(result.slides).toHaveLength(0)
+    })
   })
 
-  it('should handle frontmatter', async () => {
-    const content = `---
-title: Test Video
+  describe('Frontmatter Handling', () => {
+    it('should parse frontmatter correctly', async () => {
+      const content = `---
+title: Test Presentation
 fps: 30
 resolution:
   width: 1920
   height: 1080
 ---
 # Content`
-    const result = await parseMDX(content)
-    expect(result.frontmatter.title).toBe('Test Video')
-    expect(result.frontmatter.fps).toBe(30)
-    expect(result.frontmatter.resolution).toEqual({
-      width: 1920,
-      height: 1080
+      const result = await parseMDX(content)
+      expect(result.frontmatter).toEqual({
+        title: 'Test Presentation',
+        fps: 30,
+        resolution: {
+          width: 1920,
+          height: 1080
+        }
+      })
+    })
+
+    it('should handle missing frontmatter', async () => {
+      const content = '# No Frontmatter'
+      const result = await parseMDX(content)
+      expect(result.frontmatter).toEqual({})
     })
   })
 
-  it('should parse Slidev syntax', async () => {
-    const content = `---
-theme: default
-transition: fade
+  describe('Component Integration', () => {
+    it('should render Browser component', async () => {
+      const content = '<Browser url="https://example.com" width={1920} height={1080} />'
+      const result = await parseMDX(content)
+      expect(result.content).toContain('Browser')
+      expect(result.content).toContain('example.com')
+    })
+
+    it('should render Video component', async () => {
+      const content = '<Video src="video.mp4" type="storyblocks" width={1920} height={1080} />'
+      const result = await parseMDX(content)
+      expect(result.content).toContain('Video')
+      expect(result.content).toContain('video.mp4')
+    })
+
+    it('should render Image component', async () => {
+      const content = '<Image src="image.jpg" type="unsplash" width={1920} height={1080} />'
+      const result = await parseMDX(content)
+      expect(result.content).toContain('Image')
+      expect(result.content).toContain('image.jpg')
+    })
+
+    it('should render Animation component', async () => {
+      const content = '<Animation type="magicui" name="fade" duration={1} />'
+      const result = await parseMDX(content)
+      expect(result.content).toContain('Animation')
+      expect(result.content).toContain('fade')
+    })
+
+    it('should render Voiceover component', async () => {
+      const content = '<Voiceover text="Hello world" voice="default" />'
+      const result = await parseMDX(content)
+      expect(result.content).toContain('Voiceover')
+      expect(result.content).toContain('Hello world')
+    })
+  })
+
+  describe('Error Handling', () => {
+    it('should handle invalid MDX syntax', async () => {
+      const content = '< Invalid MDX >'
+      await expect(parseMDX(content)).rejects.toThrow('Failed to parse MDX')
+    })
+
+    it('should handle invalid component props', async () => {
+      const content = '<Browser invalidProp="test" />'
+      const result = await parseMDX(content)
+      expect(result.content).toContain('Browser')
+    })
+
+    it('should handle malformed frontmatter', async () => {
+      const content = `---
+invalid yaml
+---
+# Content`
+      await expect(parseMDX(content)).rejects.toThrow()
+    })
+  })
+
+  describe('Slidev Syntax', () => {
+    it('should handle Slidev layout syntax', async () => {
+      const content = `---
 layout: intro
 ---
-# Slide 1
----
-layout: default
-transition: slide
----
-# Slide 2`
-    const result = await parseMDX(content)
-    expect(result.slidevConfig.theme).toBe('default')
-    expect(result.slidevConfig.transition).toBe('fade')
-    expect(result.slides).toHaveLength(2)
-  })
-
-  it('should handle custom components', async () => {
-    const content = `
-<Browser url="https://example.com" width={1920} height={1080} />
-<Video src="demo.mp4" type="storyblocks" />
-<Image src="background.jpg" type="unsplash" />
-<Animation type="magicui" name="fade" duration={2} />
-<Voiceover text="Welcome to the demo" voice="Nova" />`
-
-    const result = await parseMDX(content, {
-      components: { Browser, Video, Image, Animation, Voiceover }
+# Welcome`
+      const result = await parseMDX(content)
+      expect(result.slidevConfig).toHaveProperty('layout', 'intro')
     })
-    expect(result.content).toContain('Browser')
-    expect(result.content).toContain('Video')
-    expect(result.content).toContain('Image')
-    expect(result.content).toContain('Animation')
-    expect(result.content).toContain('Voiceover')
-  })
 
-  it('should handle errors gracefully', async () => {
-    await expect(parseMDX('<Invalid>')).rejects.toThrow('Failed to parse MDX')
-  })
-
-  it('should support remark and rehype plugins', async () => {
-    const content = `---
-title: Test
+    it('should handle Slidev transitions', async () => {
+      const content = `---
+transition: slide-left
 ---
-# Hello
-* List item 1
-* List item 2
+# Slide`
+      const result = await parseMDX(content)
+      expect(result.slidevConfig).toHaveProperty('transition', 'slide-left')
+    })
+  })
 
-\`\`\`js
-console.log('test')
-\`\`\`
-`
-    const result = await parseMDX(content)
-    expect(result.content).toContain('List item')
-    expect(result.content).toContain('console.log')
+  describe('Slide Separation', () => {
+    it('should separate slides correctly', async () => {
+      const content = `# Slide 1\n---\n# Slide 2`
+      const result = await parseMDX(content)
+      expect(result.slides).toHaveLength(2)
+    })
+
+    it('should handle single slide', async () => {
+      const content = '# Single Slide'
+      const result = await parseMDX(content)
+      expect(result.slides).toHaveLength(1)
+    })
   })
 })
