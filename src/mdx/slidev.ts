@@ -1,57 +1,82 @@
 import { VFile } from 'vfile'
+import { unified } from 'unified'
+import remarkParse from 'remark-parse'
+import remarkFrontmatter from 'remark-frontmatter'
+import { parse as parseYaml } from 'yaml'
+import { visit } from 'unist-util-visit'
+import { toString } from 'mdast-util-to-string'
+import { Root, Code } from 'mdast'
 
 export interface SlidevConfig {
   theme?: string
-  highlighter?: string
-  lineNumbers?: boolean
+  layout?: string
+  highlighter?: {
+    theme: string
+    showLineNumbers?: boolean
+  }
   drawings?: {
     enabled?: boolean
     persist?: boolean
   }
-  transition?: string
+  transition?: {
+    type: string
+    duration?: number
+  }
 }
 
 export function parseSlidevSyntax(file: VFile): SlidevConfig {
   const content = String(file)
-  const configMatch = content.match(/^---\n([\s\S]*?)\n---/)
+  const tree = unified()
+    .use(remarkParse)
+    .use(remarkFrontmatter, ['yaml'])
+    .parse(content) as Root
 
-  if (!configMatch) {
-    return {}
-  }
+  let config: SlidevConfig = {}
 
-  try {
-    // Convert Slidev frontmatter to our config format
-    const config: SlidevConfig = {}
-    const lines = configMatch[1].split('\n')
-
-    lines.forEach((line) => {
-      const [key, value] = line.split(':').map((s) => s.trim())
-
-      switch (key) {
-        case 'theme':
-          config.theme = value
-          break
-        case 'highlighter':
-          config.highlighter = value
-          break
-        case 'lineNumbers':
-          config.lineNumbers = value === 'true'
-          break
-        case 'drawings':
-          config.drawings = {
-            enabled: true,
-            persist: false,
-          }
-          break
-        case 'transition':
-          config.transition = value
-          break
+  // Extract frontmatter configuration
+  if (tree.children[0]?.type === 'yaml') {
+    try {
+      const yamlConfig = parseYaml(tree.children[0].value) || {}
+      config = {
+        theme: yamlConfig.theme,
+        layout: yamlConfig.layout,
+        highlighter: yamlConfig.highlighter && {
+          theme: yamlConfig.highlighter.theme || 'github-dark',
+          showLineNumbers: yamlConfig.highlighter.showLineNumbers ?? true,
+        },
+        drawings: yamlConfig.drawings && {
+          enabled: yamlConfig.drawings.enabled ?? true,
+          persist: yamlConfig.drawings.persist ?? false,
+        },
+        transition: yamlConfig.transition && {
+          type: typeof yamlConfig.transition === 'string' ? yamlConfig.transition : yamlConfig.transition.type,
+          duration: typeof yamlConfig.transition === 'object' ? yamlConfig.transition.duration : undefined,
+        },
       }
-    })
-
-    return config
-  } catch (error) {
-    console.error('Failed to parse Slidev config:', error)
-    return {}
+    } catch (error) {
+      console.error('Failed to parse Slidev config:', error)
+    }
   }
+
+  // Process code blocks for highlighting
+  visit(tree, 'code', (node: Code) => {
+    if (!config.highlighter) {
+      config.highlighter = {
+        theme: 'github-dark',
+        showLineNumbers: true,
+      }
+    }
+    // Add language-specific highlighting
+    if (node.lang) {
+      node.data = {
+        ...node.data,
+        hProperties: {
+          className: [`language-${node.lang}`],
+          ...(config.highlighter.showLineNumbers && { 'data-line-numbers': '' }),
+        },
+      }
+    }
+  })
+
+  return config
 }
