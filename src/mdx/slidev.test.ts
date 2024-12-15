@@ -33,6 +33,36 @@ drawings:
     expect(config.drawings?.enabled).toBe(true)
   })
 
+  it('should parse layout and transition config', () => {
+    const file = new VFile(`---
+layout: default
+transition: slide-fade
+---
+
+# Content`)
+
+    const config = parseSlidevSyntax(file)
+    expect(config.layout).toBe('default')
+    expect(config.transition).toEqual({
+      type: 'slide-fade',
+      duration: 300
+    })
+  })
+
+  it('should parse highlight config', () => {
+    const file = new VFile(`---
+highlight: github-dark
+---
+
+# Content`)
+
+    const config = parseSlidevSyntax(file)
+    expect(config.highlight).toEqual({
+      theme: 'github-dark',
+      lines: true
+    })
+  })
+
   it('should handle missing frontmatter', () => {
     const file = new VFile('# Content without frontmatter')
 

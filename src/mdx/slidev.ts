@@ -8,7 +8,15 @@ export interface SlidevConfig {
     enabled?: boolean
     persist?: boolean
   }
-  transition?: string
+  transition?: {
+    type: string
+    duration: number
+  }
+  layout?: string
+  highlight?: {
+    theme: string
+    lines: boolean
+  }
 }
 
 export function parseSlidevSyntax(file: VFile): SlidevConfig {
@@ -44,7 +52,19 @@ export function parseSlidevSyntax(file: VFile): SlidevConfig {
           }
           break
         case 'transition':
-          config.transition = value
+          config.transition = {
+            type: value,
+            duration: 300 // default duration
+          }
+          break
+        case 'layout':
+          config.layout = value
+          break
+        case 'highlight':
+          config.highlight = {
+            theme: value,
+            lines: true // default to true
+          }
           break
       }
     })
