@@ -47,13 +47,13 @@ describe('StockService', () => {
   })
 
   it('should fetch image from Unsplash', async () => {
-    const result = await service.getImage('nature', {})
+    const result = await service.getImage('nature', 'regular')
     expect(result.url).toBeDefined()
     expect(result.credit).toContain('Photo by')
   })
 
   it('should fetch video from Storyblocks', async () => {
-    const result = await service.getVideo('nature', {})
+    const result = await service.getVideo('nature', 'hd')
     expect(result.url).toBeDefined()
   })
 })

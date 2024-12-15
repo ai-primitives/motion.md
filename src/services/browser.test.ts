@@ -19,18 +19,24 @@ describe('BrowserService', () => {
   let service: BrowserService
 
   beforeEach(() => {
-    service = new BrowserService()
+    service = new BrowserService({
+      headless: true,
+      defaultViewport: {
+        width: 1920,
+        height: 1080,
+        deviceScaleFactor: 1
+      }
+    })
   })
 
   afterEach(async () => {
-    await service.cleanup()
+    if (service) {
+      await service.cleanup()
+    }
   })
 
   it('should capture screenshot', async () => {
-    const screenshot = await service.capture('https://example.com', {
-      width: 1920,
-      height: 1080,
-    })
+    const screenshot = await service.capture('https://example.com')
     expect(screenshot).toBeDefined()
   })
 })
