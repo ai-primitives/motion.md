@@ -111,7 +111,7 @@ vi.mock('@mdx-js/mdx', () => {
 })
 
 // Mock Puppeteer
-vi.mock('puppeteer', () => {
+vi.mock('puppeteer', async () => {
   const mockPage = {
     goto: vi.fn().mockRejectedValue(new Error('Failed to load page')),
     setViewport: vi.fn(),
@@ -125,21 +125,25 @@ vi.mock('puppeteer', () => {
   }
 
   return {
-    launch: vi.fn().mockResolvedValue(mockBrowser),
+    default: {
+      launch: vi.fn().mockResolvedValue(mockBrowser),
+    },
   }
 })
 
 // Mock axios
-vi.mock('axios', () => {
-  return {
-    default: {
-      create: vi.fn().mockReturnValue({
-        get: vi.fn().mockRejectedValue(new Error('Failed to fetch video: Network Error')),
-        post: vi.fn().mockRejectedValue(new Error('Failed to generate image: OpenAI API key required')),
-      }),
-    },
-  }
-})
+vi.mock('axios', () => ({
+  default: {
+    get: vi.fn().mockResolvedValue({
+      data: {
+        urls: { regular: 'https://example.com/image.jpg' },
+      },
+    }),
+    post: vi.fn().mockResolvedValue({
+      data: { data: [{ url: 'https://example.com/generated.png' }] },
+    }),
+  },
+}))
 
 // Mock unsplash-js
 vi.mock('unsplash-js', () => {

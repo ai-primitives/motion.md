@@ -2,22 +2,51 @@ import axios from 'axios'
 import { AIConfig } from './index'
 
 export class AIService {
-  private apiKey: string
-  private modelName: string
+  private config: AIConfig
 
   constructor(config: AIConfig) {
-    this.apiKey = config.apiKey || process.env.OPENAI_API_KEY || ''
-    this.modelName = config.modelName || 'gpt-4'
+    this.config = config
   }
 
-  private async validateApiKey() {
-    if (!this.apiKey) {
+  async generateImage(prompt: string): Promise<string> {
+    if (!this.config.apiKey) {
       throw new Error('OpenAI API key is required')
+    }
+
+    try {
+      const response = await axios.post(
+        'https://api.openai.com/v1/images/generations',
+        {
+          prompt,
+          n: 1,
+          size: '1024x1024',
+          response_format: 'url'
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.config.apiKey}`
+          }
+        }
+      )
+
+      if (!response.data?.data?.[0]?.url) {
+        throw new Error('Failed to generate image: Invalid response from OpenAI API')
+      }
+
+      return response.data.data[0].url
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to generate image: ${error.message}`)
+      }
+      throw new Error('Failed to generate image: Unknown error')
     }
   }
 
   async generateVideo(prompt: string) {
-    await this.validateApiKey()
+    if (!this.config.apiKey) {
+      throw new Error('OpenAI API key is required')
+    }
 
     try {
       const response = await axios.post(
@@ -31,7 +60,7 @@ export class AIService {
         },
         {
           headers: {
-            Authorization: `Bearer ${this.apiKey}`,
+            Authorization: `Bearer ${this.config.apiKey}`,
             'Content-Type': 'application/json',
           },
         },
@@ -46,38 +75,10 @@ export class AIService {
     }
   }
 
-  async generateImage(prompt: string) {
-    await this.validateApiKey()
-
-    try {
-      const response = await axios.post(
-        'https://api.openai.com/v1/images/generations',
-        {
-          prompt,
-          model: 'dall-e-3',
-          n: 1,
-          size: '1024x1024',
-          response_format: 'url',
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${this.apiKey}`,
-            'Content-Type': 'application/json',
-          },
-        },
-      )
-
-      return response.data.data[0].url
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to generate image: ${error.message}`)
-      }
-      throw new Error('Failed to generate image: Unknown error')
-    }
-  }
-
   async generateVoiceover(text: string) {
-    await this.validateApiKey()
+    if (!this.config.apiKey) {
+      throw new Error('OpenAI API key is required')
+    }
 
     try {
       const response = await axios.post(
@@ -89,7 +90,7 @@ export class AIService {
         },
         {
           headers: {
-            Authorization: `Bearer ${this.apiKey}`,
+            Authorization: `Bearer ${this.config.apiKey}`,
             'Content-Type': 'application/json',
           },
           responseType: 'arraybuffer',
