@@ -1,1 +1,34 @@
-import { describe, it, expect } from "vitest"\nimport { Browser, Video, Image, Animation, Voiceover } from "."\n\ndescribe("Components", () => {\n  describe("Browser", () => {\n    it("should be defined", () => {\n      expect(Browser).toBeDefined()\n    })\n  })\n\n  describe("Video", () => {\n    it("should be defined", () => {\n      expect(Video).toBeDefined()\n    })\n  })\n\n  describe("Image", () => {\n    it("should be defined", () => {\n      expect(Image).toBeDefined()\n    })\n  })\n\n  describe("Animation", () => {\n    it("should be defined", () => {\n      expect(Animation).toBeDefined()\n    })\n  })\n\n  describe("Voiceover", () => {\n    it("should be defined", () => {\n      expect(Voiceover).toBeDefined()\n    })\n  })\n})
+import { describe, it, expect } from 'vitest'
+import { Browser, Video, Image, Animation, Voiceover } from '.'
+
+describe('Components', () => {
+  describe('Browser', () => {
+    it('should be defined', () => {
+      expect(Browser).toBeDefined()
+    })
+  })
+
+  describe('Video', () => {
+    it('should be defined', () => {
+      expect(Video).toBeDefined()
+    })
+  })
+
+  describe('Image', () => {
+    it('should be defined', () => {
+      expect(Image).toBeDefined()
+    })
+  })
+
+  describe('Animation', () => {
+    it('should be defined', () => {
+      expect(Animation).toBeDefined()
+    })
+  })
+
+  describe('Voiceover', () => {
+    it('should be defined', () => {
+      expect(Voiceover).toBeDefined()
+    })
+  })
+})

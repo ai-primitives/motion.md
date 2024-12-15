@@ -81,36 +81,29 @@ export class MockAnimationService extends AnimationService {
     super(config)
   }
 
-  async getAnimation(name: string): Promise<{
-    name: string
-    defaultDuration: number
-    defaultEasing: string
-    keyframes: string
-    css: string
-    duration: number
-    easing: string
-  }> {
-    const animationName = `mock${name.charAt(0).toUpperCase()}${name.slice(1)}`
-    const keyframesStr = `0% { opacity: 0; } 100% { opacity: 1; }`
+  getAnimation(name: string, frame: number, options?: { duration?: number; easing?: string }) {
+    const duration = options?.duration || 1
+    const frameRange = [0, this.fps * duration]
 
-    const css = `
-@keyframes ${animationName} {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-.${animationName} {
-  animation: ${animationName} 1s ease-in-out;
-}`
-
-    return {
-      name: animationName,
-      defaultDuration: 1,
-      defaultEasing: 'ease-in-out',
-      duration: 1,
-      easing: 'ease-in-out',
-      keyframes: keyframesStr,
-      css,
+    switch (name) {
+      case 'fadeIn':
+        return {
+          opacity: 0.5, // Mock interpolated value
+        }
+      case 'scale':
+        return {
+          transform: 'scale(1.5)', // Mock interpolated value
+        }
+      case 'slideIn':
+        return {
+          transform: 'translateX(-50%)', // Mock interpolated value
+        }
+      case 'rotate':
+        return {
+          transform: 'rotate(180deg)', // Mock interpolated value
+        }
+      default:
+        throw new Error(`Animation "${name}" not found`)
     }
   }
 }

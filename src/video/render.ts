@@ -3,9 +3,10 @@ import { renderMedia, getCompositions } from '@remotion/renderer'
 import type { VideoConfig } from 'remotion'
 import path from 'path'
 import type { BrowserService, StockService, AIService, AnimationService } from '../services'
+import type { ParsedMDX } from '../mdx/parser'
 
 interface RenderOptions {
-  input: string
+  input: ParsedMDX
   output: string
   fps?: number
   width?: number
@@ -36,7 +37,10 @@ export async function render(options: RenderOptions): Promise<void> {
       defaultProps: {},
       props: {
         services,
-        markdown: input,
+        markdown: input.content,
+        slides: input.slides,
+        frontmatter: input.frontmatter,
+        slidevConfig: input.slidevConfig,
       },
     }
 

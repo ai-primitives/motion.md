@@ -1,4 +1,7 @@
 import { ReactNode } from 'react'
+import type { BrowserService } from '../services/browser'
+import type { StockService } from '../services/stock'
+import type { AnimationService } from '../services/animation'
 
 export interface BaseComponentProps {
   children?: ReactNode
@@ -26,18 +29,21 @@ export interface BrowserProps extends BaseComponentProps {
   url: string
   width?: number
   height?: number
+  service: BrowserService
 }
 
 export interface VideoProps extends BaseComponentProps {
   src: string
   type?: 'stock' | 'ai' | 'custom'
   autoplay?: boolean
+  service: StockService
 }
 
 export interface AnimationProps extends BaseComponentProps {
   name: string
   duration?: number
   easing?: string
+  service: AnimationService
 }
 
 export interface MemeProps extends BaseComponentProps {
@@ -50,6 +56,7 @@ export interface ImageProps extends BaseComponentProps {
   src: string
   alt?: string
   type?: 'stock' | 'ai' | 'custom'
+  service: StockService
 }
 
 export interface ScreenshotProps extends BaseComponentProps {

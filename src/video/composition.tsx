@@ -1,11 +1,11 @@
 import React from 'react'
 import { Composition, useCurrentFrame, interpolate } from 'remotion'
-import { Intro, Outro } from '../components/core'
-import { Browser, Video, Image, Animation } from '../components/media'
+import { Browser, Video, Image, Animation } from '../components'
 import { validateProps } from '../components/validation'
-import { introSchema, outroSchema, browserSchema, videoSchema, imageSchema, animationSchema } from '../components/validation'
+import { browserSchema, videoSchema, imageSchema, animationSchema } from '../components/validation'
 import { initializeServices } from '../services'
 import { parseMDX } from '../mdx/parser'
+import type { BrowserProps, VideoProps, ImageProps, AnimationProps } from '../components/interfaces'
 
 interface SlideProps extends Record<string, unknown> {
   content: React.ReactNode
@@ -13,8 +13,7 @@ interface SlideProps extends Record<string, unknown> {
   transition?: 'fade' | 'slide' | 'none'
 }
 
-const Slide = (props: SlideProps) => {
-  const { content, duration, transition = 'none' } = props
+const Slide: React.FC<SlideProps> = ({ content, duration, transition = 'none' }) => {
   const frame = useCurrentFrame()
   const frameRange = [0, duration * 30] // 30fps
 
@@ -42,28 +41,38 @@ export const MotionComposition: React.FC = () => {
     animation: { fps: 30 },
   })
 
-  const components = {
-    Browser: (props: any) => <Browser service={services.browser} {...props} />,
-    Video: (props: any) => <Video service={services.stock} {...props} />,
-    Image: (props: any) => <Image service={services.stock} {...props} />,
-    Animation: (props: any) => <Animation service={services.animation} {...props} />,
+  const renderComponent = (type: string, props: any): React.ReactElement | null => {
+    switch (type) {
+      case 'browser':
+        validateProps(browserSchema, props)
+        return <Browser service={services.browser} {...props} />
+      case 'video':
+        validateProps(videoSchema, props)
+        return <Video service={services.stock} {...props} />
+      case 'image':
+        validateProps(imageSchema, props)
+        return <Image service={services.stock} {...props} />
+      case 'animation':
+        validateProps(animationSchema, props)
+        return <Animation service={services.animation} {...props} />
+      default:
+        return null
+    }
   }
 
   return (
-    <>
-      <Composition
-        id='Presentation'
-        component={Slide}
-        durationInFrames={30 * 60} // 60 seconds at 30fps
-        fps={30}
-        width={1920}
-        height={1080}
-        defaultProps={{
-          content: <div>Loading...</div>,
-          duration: 5,
-          transition: 'fade',
-        }}
-      />
-    </>
+    <Composition
+      id="Presentation"
+      component={Slide}
+      durationInFrames={30 * 60} // 60 seconds at 30fps
+      fps={30}
+      width={1920}
+      height={1080}
+      defaultProps={{
+        content: <div>Loading...</div>,
+        duration: 5,
+        transition: 'fade',
+      }}
+    />
   )
 }

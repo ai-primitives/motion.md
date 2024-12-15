@@ -2,7 +2,7 @@ import { interpolate } from 'remotion'
 import type { AnimationConfig } from './index'
 
 export class AnimationService {
-  private fps: number
+  protected fps: number
 
   constructor(config: AnimationConfig) {
     this.fps = config.fps || 30

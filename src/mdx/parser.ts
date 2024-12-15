@@ -2,8 +2,8 @@ import React, { createElement, Fragment } from 'react'
 import { compile } from '@mdx-js/mdx'
 import { VFile } from 'vfile'
 import { renderToString } from 'react-dom/server'
-import { validateBrowserProps, validateVideoProps, validateImageProps, validateAnimationProps, validateVoiceoverProps } from '../utils/validation'
-import { Browser, Video, Image, Animation, Voiceover } from '../components'
+import { validateBrowserProps, validateVideoProps, validateImageProps, validateAnimationProps } from '../utils/validation'
+import { Browser, Video, Image, Animation } from '../components'
 import { parseFrontmatter, FrontmatterData } from './frontmatter'
 
 export interface ParsedMDX {
@@ -51,14 +51,6 @@ const defaultComponents = {
       throw new Error(`Failed to parse MDX: ${error.message}`)
     }
   },
-  Voiceover: (props: any) => {
-    try {
-      validateVoiceoverProps(props)
-      return createElement(Voiceover, props)
-    } catch (error: any) {
-      throw new Error(`Failed to parse MDX: ${error.message}`)
-    }
-  },
   wrapper: ({ children }: { children: React.ReactNode }) => createElement('div', { className: 'slide', 'data-slide-index': '0' }, children),
   Fragment,
 }
@@ -70,7 +62,15 @@ const runtime = {
   useMDXComponents: () => defaultComponents,
 }
 
-export async function parseMDX(mdxContent: string, options: MDXParserOptions = {}): Promise<ParsedMDX> {
+export async function parseMDX(input: string | VFile, options: MDXParserOptions = {}): Promise<ParsedMDX> {
+  let mdxContent: string
+
+  if (typeof input === 'string') {
+    mdxContent = input
+  } else {
+    mdxContent = String(input)
+  }
+
   // Handle empty content
   if (!mdxContent || !mdxContent.trim()) {
     return {
@@ -108,7 +108,7 @@ export async function parseMDX(mdxContent: string, options: MDXParserOptions = {
     transition: frontmatterData.transitions?.[0]?.type || frontmatterData.transition || null,
   }
 
-  const componentRegex = /<(Browser|Video|Image|Animation|Voiceover)\s*([^>]*?)\/>/g
+  const componentRegex = /<(Browser|Video|Image|Animation)\s*([^>]*?)\/>/g
   let match
   while ((match = componentRegex.exec(mdxWithoutFrontmatter)) !== null) {
     const [_, componentName, propsString] = match
@@ -144,9 +144,6 @@ export async function parseMDX(mdxContent: string, options: MDXParserOptions = {
           break
         case 'Animation':
           validateAnimationProps(props)
-          break
-        case 'Voiceover':
-          validateVoiceoverProps(props)
           break
       }
     } catch (error: any) {

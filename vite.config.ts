@@ -10,7 +10,26 @@ export default defineConfig({
       fileName: (format) => `motion.${format}.js`
     },
     rollupOptions: {
-      external: ["react", "remotion"]
+      external: [
+        "react",
+        "react-dom",
+        "remotion",
+        "@remotion/core",
+        "@remotion/cli",
+        "@remotion/media-utils",
+        "puppeteer",
+        "browserbase",
+        "@mdx-js/react",
+        "@mdx-js/mdx",
+        "zod",
+        "@ai-sdk/openai",
+        "axios",
+        "commander",
+        "nanospinner",
+        "node-fetch",
+        "unsplash-js",
+        "yaml"
+      ]
     }
   }
 })

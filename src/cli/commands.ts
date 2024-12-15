@@ -1,10 +1,11 @@
-import { existsSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 import { createSpinner } from 'nanospinner'
 import { render } from '../video/render'
 import { parseMDX } from '../mdx/parser'
 import { parseFrontmatter } from '../mdx/frontmatter'
 import { initializeServices, type ServiceConfig } from '../services'
+import { VFile } from 'vfile'
 
 interface RenderOptions {
   output?: string
@@ -26,15 +27,17 @@ export async function renderCommand(input: string, options: RenderOptions = {}) 
 
     // Parse MDX and frontmatter
     spinner.update({ text: 'Parsing markdown content...' })
-    const mdxContent = await parseMDX(inputPath)
-    const frontmatter = parseFrontmatter(inputPath)
+    const mdxContent = readFileSync(inputPath, 'utf-8')
+    const vfile = new VFile(mdxContent)
+    const parsedMDX = await parseMDX(vfile)
+    const frontmatter = parseFrontmatter(vfile)
 
-    // Initialize services
-    const services = initializeServices(options.config)
+    // Initialize services with default config if none provided
+    const services = initializeServices(options.config || {})
 
     // Configure video settings
     const videoConfig = {
-      input: mdxContent,
+      input: parsedMDX,
       output: options.output || input.replace(/\.md$/, '.mp4'),
       fps: options.fps || frontmatter.fps || 30,
       width: options.width || frontmatter.width || 1920,

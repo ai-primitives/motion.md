@@ -1,23 +1,11 @@
 import React, { useRef } from 'react'
 import { useCurrentFrame } from 'remotion'
-import { initializeServices } from '../services'
+import type { BrowserProps, VideoProps, ImageProps, AnimationProps } from './interfaces'
 import { validateProps } from './validation'
 import { browserSchema, videoSchema, imageSchema, animationSchema } from './validation'
-import type { BrowserProps, VideoProps, ImageProps, AnimationProps } from './interfaces'
 
-const services = initializeServices({
-  browser: {
-    headless: true,
-    defaultViewport: { width: 1920, height: 1080, deviceScaleFactor: 2 },
-  },
-  stock: {},
-  ai: {},
-  animation: { fps: 30 },
-})
-
-export const Browser: React.FC<BrowserProps> = (props) => {
-  const validProps = validateProps(browserSchema, props)
-  const { url, width = 1920, height = 1080, children } = validProps
+export const Browser = ({ service, url, width = 1920, height = 1080, children }: BrowserProps): React.ReactElement => {
+  const validProps = validateProps(browserSchema, { url, width, height })
 
   return (
     <div className='browser-window' style={{ width, height }}>
@@ -26,9 +14,8 @@ export const Browser: React.FC<BrowserProps> = (props) => {
   )
 }
 
-export const Video: React.FC<VideoProps> = (props) => {
-  const validProps = validateProps(videoSchema, props)
-  const { src, type = 'custom', autoplay = false } = validProps
+export const Video = ({ service, src, type = 'custom', autoplay = false }: VideoProps): React.ReactElement => {
+  const validProps = validateProps(videoSchema, { src, type, autoplay })
 
   return (
     <div className='video-container'>
@@ -39,9 +26,8 @@ export const Video: React.FC<VideoProps> = (props) => {
   )
 }
 
-export const Image: React.FC<ImageProps> = (props) => {
-  const validProps = validateProps(imageSchema, props)
-  const { src, alt, type = 'custom' } = validProps
+export const Image = ({ service, src, alt, type = 'custom' }: ImageProps): React.ReactElement => {
+  const validProps = validateProps(imageSchema, { src, alt, type })
 
   return (
     <div className='image-container'>
@@ -50,15 +36,14 @@ export const Image: React.FC<ImageProps> = (props) => {
   )
 }
 
-export const Animation: React.FC<AnimationProps> = (props) => {
-  const validProps = validateProps(animationSchema, props)
-  const { name, duration = 1, easing = 'ease-in-out' } = validProps
+export const Animation = ({ service, name, duration = 1, easing = 'ease-in-out', children }: AnimationProps): React.ReactElement => {
+  const validProps = validateProps(animationSchema, { name, duration, easing })
   const frame = useCurrentFrame()
-  const animation = services.animation.getAnimation(name, frame, { duration, easing })
+  const animation = service.getAnimation(name, frame, { duration, easing })
 
   return (
     <div className='animation-container' style={animation}>
-      {props.children}
+      {children}
     </div>
   )
 }

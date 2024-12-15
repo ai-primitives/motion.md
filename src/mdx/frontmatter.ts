@@ -1,11 +1,14 @@
 import { matter } from 'vfile-matter'
-import type { VFile } from 'vfile'
+import { VFile } from 'vfile'
+import { readFileSync } from 'fs'
 import { isObject } from '../utils'
 
 export interface FrontmatterData {
   title?: string
   duration?: number
   fps?: number
+  width?: number  // Add direct width/height for backward compatibility
+  height?: number
   resolution?: {
     width: number
     height: number
@@ -23,13 +26,29 @@ export interface FrontmatterData {
   }
 }
 
-export function parseFrontmatter(file: VFile): FrontmatterData {
+export function parseFrontmatter(input: string | VFile): FrontmatterData {
+  let file: VFile
+
+  if (typeof input === 'string') {
+    const content = readFileSync(input, 'utf-8')
+    file = new VFile(content)
+  } else {
+    file = input
+  }
+
   matter(file, { strip: true })
   const data = file.data.matter
 
   if (!data || !isObject(data)) {
-    throw new Error('Failed to parse MDX: Invalid frontmatter format')
+    return {}
   }
 
-  return data as FrontmatterData
+  // Handle both direct width/height and nested resolution
+  const result = data as FrontmatterData
+  if (result.resolution) {
+    result.width = result.width || result.resolution.width
+    result.height = result.height || result.resolution.height
+  }
+
+  return result
 }

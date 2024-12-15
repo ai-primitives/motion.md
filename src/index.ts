@@ -1,1 +1,33 @@
-import { BrowserService, StockService, AIService, AnimationService } from "../services"\nimport axios from "axios"\n\n// Initialize services with configuration\nexport const browserService = new BrowserService()\nexport const stockService = new StockService({\n  storyblocksApiKey: process.env.STORYBLOCKS_API_KEY,\n  unsplashAccessKey: process.env.UNSPLASH_ACCESS_KEY\n})\nexport const aiService = new AIService({\n  apiKey: process.env.OPENAI_API_KEY\n})\nexport const animationService = new AnimationService()\n\n// Configure axios for API requests\naxios.defaults.headers.common["User-Agent"] = "motion.md/1.0.0"\n\n// Re-export components and services\nexport * from "./components"\nexport * from "../services"
+import { BrowserService, StockService, AIService, AnimationService } from './services'
+import axios from 'axios'
+
+// Initialize services with configuration
+export const browserService = new BrowserService({
+  headless: true,
+  defaultViewport: {
+    width: 1920,
+    height: 1080,
+    deviceScaleFactor: 2,
+  },
+})
+
+export const stockService = new StockService({
+  storyblocksApiKey: process.env.STORYBLOCKS_API_KEY,
+  unsplashAccessKey: process.env.UNSPLASH_ACCESS_KEY,
+})
+
+export const aiService = new AIService({
+  apiKey: process.env.OPENAI_API_KEY,
+  modelName: 'gpt-4',
+})
+
+export const animationService = new AnimationService({
+  fps: 30,
+})
+
+// Configure axios for API requests
+axios.defaults.headers.common['User-Agent'] = 'motion.md/1.0.0'
+
+// Re-export components and services
+export * from './components'
+export * from './services'

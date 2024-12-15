@@ -1,89 +1,46 @@
-import { FC, createElement, ComponentType } from 'react'
-import {
-  validateBrowserProps,
-  validateVideoProps,
-  validateImageProps,
-  validateAnimationProps,
-  validateVoiceoverProps,
-  ValidationError,
-} from '../utils/validation'
+import { ReactNode } from 'react'
+import type { BrowserService } from '../services/browser'
+import type { StockService } from '../services/stock'
+import type { AnimationService } from '../services/animation'
 
-interface BrowserProps {
-  url?: string
-  width?: number
-  height?: number
-}
-
-interface VideoProps {
-  src?: string
-  type?: 'storyblocks' | 'ai'
-  width?: number
-  height?: number
-}
-
-interface ImageProps {
-  src?: string
-  type?: 'unsplash' | 'ai'
-  width?: number
-  height?: number
-}
-
-interface AnimationProps {
-  type: 'magicui'
-  name?: string
+export interface BaseComponentProps {
+  children?: ReactNode
   duration?: number
+  transition?: string
 }
 
-interface VoiceoverProps {
-  text?: string
+export interface BrowserProps extends BaseComponentProps {
+  url: string
+  width?: number
+  height?: number
+  service: BrowserService
+}
+
+export interface VideoProps extends BaseComponentProps {
+  src: string
+  type?: 'stock' | 'ai' | 'custom'
+  autoplay?: boolean
+  service: StockService
+}
+
+export interface ImageProps extends BaseComponentProps {
+  src: string
+  alt?: string
+  type?: 'stock' | 'ai' | 'custom'
+  service: StockService
+}
+
+export interface AnimationProps extends BaseComponentProps {
+  name: string
+  duration?: number
+  easing?: string
+  service: AnimationService
+}
+
+export interface VoiceoverProps extends BaseComponentProps {
+  text: string
   voice?: string
 }
 
-function withValidation<P extends object>(Component: FC<P>, validate: (props: P) => void, displayName: string): FC<P> {
-  const ValidatedComponent: FC<P> = (props) => {
-    try {
-      validate(props)
-    } catch (error: unknown) {
-      if (error instanceof ValidationError) {
-        throw error
-      }
-      if (error instanceof Error) {
-        throw new ValidationError(error.message)
-      }
-      throw new ValidationError('Component validation failed')
-    }
-    return createElement(Component, props)
-  }
-  ValidatedComponent.displayName = displayName
-  return ValidatedComponent
-}
-
-const BaseBrowser: FC<BrowserProps> = (props) => {
-  return createElement('div', { className: 'browser-component' }, `Browser: ${props.url}`)
-}
-
-const BaseVideo: FC<VideoProps> = (props) => {
-  return createElement('div', { className: 'video-component' }, `Video: ${props.src}`)
-}
-
-const BaseImage: FC<ImageProps> = (props) => {
-  return createElement('div', { className: 'image-component' }, `Image: ${props.src}`)
-}
-
-const BaseAnimation: FC<AnimationProps> = (props) => {
-  return createElement('div', { className: 'animation-component' }, `Animation: ${props.name}`)
-}
-
-const BaseVoiceover: FC<VoiceoverProps> = (props) => {
-  return createElement('div', { className: 'voiceover-component' }, `Voiceover: ${props.text}`)
-}
-
-const Browser = withValidation(BaseBrowser, validateBrowserProps, 'Browser')
-const Video = withValidation(BaseVideo, validateVideoProps, 'Video')
-const Image = withValidation(BaseImage, validateImageProps, 'Image')
-const Animation = withValidation(BaseAnimation, validateAnimationProps, 'Animation')
-const Voiceover = withValidation(BaseVoiceover, validateVoiceoverProps, 'Voiceover')
-
-export type { BrowserProps, VideoProps, ImageProps, AnimationProps, VoiceoverProps }
-
-export { Browser, Video, Image, Animation, Voiceover, withValidation }
+export * from './core'
+export * from './media'
