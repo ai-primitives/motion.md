@@ -24,7 +24,7 @@ const Slide = (props: SlideProps) => {
   }
 
   return (
-    <div className="slide" style={style}>
+    <div className='slide' style={style}>
       {content}
     </div>
   )
@@ -52,7 +52,7 @@ export const MotionComposition: React.FC = () => {
   return (
     <>
       <Composition
-        id="Presentation"
+        id='Presentation'
         component={Slide}
         durationInFrames={30 * 60} // 60 seconds at 30fps
         fps={30}

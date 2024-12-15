@@ -60,14 +60,14 @@ const defaultComponents = {
     }
   },
   wrapper: ({ children }: { children: React.ReactNode }) => createElement('div', { className: 'slide', 'data-slide-index': '0' }, children),
-  Fragment
+  Fragment,
 }
 
 const runtime = {
   Fragment: React.Fragment,
   jsx: createElement,
   jsxs: createElement,
-  useMDXComponents: () => defaultComponents
+  useMDXComponents: () => defaultComponents,
 }
 
 export async function parseMDX(mdxContent: string, options: MDXParserOptions = {}): Promise<ParsedMDX> {
@@ -79,8 +79,8 @@ export async function parseMDX(mdxContent: string, options: MDXParserOptions = {
       slides: [],
       slidevConfig: {
         layout: null,
-        transition: null
-      }
+        transition: null,
+      },
     }
   }
 
@@ -94,7 +94,7 @@ export async function parseMDX(mdxContent: string, options: MDXParserOptions = {
   try {
     await compile(mdxContent, {
       jsx: true,
-      development: true
+      development: true,
     })
   } catch (err: any) {
     throw new Error('Failed to parse MDX: Invalid syntax')
@@ -105,7 +105,7 @@ export async function parseMDX(mdxContent: string, options: MDXParserOptions = {
   const mdxWithoutFrontmatter = String(vfile)
   const slidevConfig = {
     layout: frontmatterData.layout || null,
-    transition: frontmatterData.transitions?.[0]?.type || frontmatterData.transition || null
+    transition: frontmatterData.transitions?.[0]?.type || frontmatterData.transition || null,
   }
 
   const componentRegex = /<(Browser|Video|Image|Animation|Voiceover)\s*([^>]*?)\/>/g
@@ -163,9 +163,7 @@ export async function parseMDX(mdxContent: string, options: MDXParserOptions = {
       jsxRuntime: 'automatic',
       development: true,
       ...options,
-      remarkPlugins: [
-        ...(options.remarkPlugins || [])
-      ]
+      remarkPlugins: [...(options.remarkPlugins || [])],
     })
     compiledResult = result
   } catch (err: any) {
@@ -182,7 +180,7 @@ export async function parseMDX(mdxContent: string, options: MDXParserOptions = {
     try {
       const mergedComponents = {
         ...defaultComponents,
-        ...components
+        ...components,
       }
 
       const moduleExports: { default?: any } = {}
@@ -213,6 +211,6 @@ export async function parseMDX(mdxContent: string, options: MDXParserOptions = {
     content: renderWithComponents(),
     frontmatter: frontmatterData,
     slidevConfig,
-    slides
+    slides,
   }
 }
