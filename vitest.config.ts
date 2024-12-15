@@ -14,7 +14,10 @@ export default defineConfig({
         'remark-parse',
         'remark-mdx',
         'remark-frontmatter',
-        'remark-gfm'
+        'remark-gfm',
+        'puppeteer',
+        'axios',
+        'unsplash-js'
       ]
     }
   }
