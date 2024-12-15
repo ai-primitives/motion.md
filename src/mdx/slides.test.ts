@@ -20,39 +20,59 @@ Thank you!`)
     expect(slides).toHaveLength(4)
     expect(slides[0].type).toBe('intro')
     expect(slides[3].type).toBe('outro')
+    expect(slides[0].heading?.level).toBe(1)
+    expect(slides[0].heading?.title).toBe('Intro')
   })
 
-  it('should separate slides by horizontal rules', () => {
-    const file = new VFile(`# Presentation
+  it('should parse slide attributes', () => {
+    const file = new VFile(`# Slide 1 {transition="fade" duration=5}
+Content for slide 1
 
----
-
-Slide content 1
-
----
-
-Slide content 2`)
+# Slide 2 {background="blue"}
+Content for slide 2`)
 
     const slides = separateSlides(file)
-    expect(slides).toHaveLength(3)
+    expect(slides).toHaveLength(2)
+    expect(slides[0].attributes).toEqual({
+      transition: 'fade',
+      duration: '5'
+    })
+    expect(slides[1].attributes).toEqual({
+      background: 'blue'
+    })
   })
 
-  it('should handle mixed separators', () => {
-    const file = new VFile(`# Intro
-Welcome
+  it('should handle nested headings', () => {
+    const file = new VFile(`# Main Topic
+Introduction
 
----
+## Subtopic 1
+Details
 
-# Slide 1
-Content
+## Subtopic 2
+More details
 
----
-
-# Outro`)
+# Conclusion`)
 
     const slides = separateSlides(file)
-    expect(slides).toHaveLength(3)
-    expect(slides[0].type).toBe('intro')
-    expect(slides[2].type).toBe('outro')
+    expect(slides).toHaveLength(4)
+    expect(slides[0].heading?.level).toBe(1)
+    expect(slides[1].heading?.level).toBe(2)
+    expect(slides[2].heading?.level).toBe(2)
+    expect(slides[3].heading?.level).toBe(1)
+  })
+
+  it('should calculate slide duration', () => {
+    const file = new VFile(`# Short Slide
+One line
+
+# Longer Slide
+Line 1
+Line 2
+Line 3`)
+
+    const slides = separateSlides(file)
+    expect(slides[0].duration).toBe(7) // 5 + 2 lines
+    expect(slides[1].duration).toBe(9) // 5 + 4 lines
   })
 })

@@ -4,14 +4,40 @@ export interface Slide {
   content: string
   type: 'intro' | 'outro' | 'content'
   duration?: number
+  attributes?: Record<string, any>
+  heading?: {
+    level: number
+    title: string
+  }
+}
+
+const parseHeading = (content: string): { level: number; title: string } | undefined => {
+  const match = content.match(/^(#{1,6})\s+(.*)$/)
+  return match ? { level: match[1].length, title: match[2].trim() } : undefined
+}
+
+const parseAttributeString = (attrString: string): Record<string, any> => {
+  const attrs: Record<string, any> = {}
+  const matches = attrString.matchAll(/(\w+)(?:=["']([^"']+)["'])?/g)
+  for (const [, key, value] of matches) {
+    attrs[key] = value === undefined ? true : value
+  }
+  return attrs
+}
+
+const parseAttributes = (content: string) => {
+  const attrMatch = content.match(/\{([^}]+)\}/)
+  return attrMatch ? parseAttributeString(attrMatch[1]) : {}
+}
+
+const calculateDuration = (content: string) => {
+  return 5 + content.split('\n').length
 }
 
 export function separateSlides(file: VFile): Slide[] {
   const content = String(file)
   const slides: Slide[] = []
 
-  // Split content by horizontal rule (---) or heading (#)
-  // First split by horizontal rules, then by headings within each section
   const sections = content.split(/\n---\n/)
 
   sections.forEach((section, sectionIndex) => {
@@ -20,10 +46,8 @@ export function separateSlides(file: VFile): Slide[] {
     headings.forEach((heading, headingIndex) => {
       const trimmedHeading = heading.trim()
 
-      // Skip empty slides
       if (!trimmedHeading) return
 
-      // Determine slide type
       let type: Slide['type'] = 'content'
       if (sectionIndex === 0 && headingIndex === 0 && trimmedHeading.toLowerCase().includes('intro')) {
         type = 'intro'
@@ -31,10 +55,15 @@ export function separateSlides(file: VFile): Slide[] {
         type = 'outro'
       }
 
+      const headingInfo = parseHeading(trimmedHeading)
+      const attributes = parseAttributes(trimmedHeading)
+
       slides.push({
         content: trimmedHeading,
         type,
-        duration: undefined, // Will be calculated based on content/voiceover later
+        duration: calculateDuration(trimmedHeading),
+        attributes,
+        heading: headingInfo
       })
     })
   })
