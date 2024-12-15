@@ -11,9 +11,9 @@
     "build": "tsc && vite build",
     "dev": "vite",
     "preview": "vite preview",
-    "lint": "prettier --write .",
+    "lint": "prettier --check .",
     "coverage": "vitest run --coverage",
-    "format": "prettier --write 'src/**/*.{ts,tsx}'"
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\" --end-of-line lf --no-error-on-unmatched-pattern"
   },
   "keywords": [],
   "author": "",

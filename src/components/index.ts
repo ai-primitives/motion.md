@@ -5,7 +5,7 @@ import {
   validateImageProps,
   validateAnimationProps,
   validateVoiceoverProps,
-  ValidationError
+  ValidationError,
 } from '../utils/validation'
 
 interface BrowserProps {
@@ -39,11 +39,7 @@ interface VoiceoverProps {
   voice?: string
 }
 
-function withValidation<P extends object>(
-  Component: FC<P>,
-  validate: (props: P) => void,
-  displayName: string
-): FC<P> {
+function withValidation<P extends object>(Component: FC<P>, validate: (props: P) => void, displayName: string): FC<P> {
   const ValidatedComponent: FC<P> = (props) => {
     try {
       validate(props)
@@ -88,19 +84,6 @@ const Image = withValidation(BaseImage, validateImageProps, 'Image')
 const Animation = withValidation(BaseAnimation, validateAnimationProps, 'Animation')
 const Voiceover = withValidation(BaseVoiceover, validateVoiceoverProps, 'Voiceover')
 
-export type {
-  BrowserProps,
-  VideoProps,
-  ImageProps,
-  AnimationProps,
-  VoiceoverProps
-}
+export type { BrowserProps, VideoProps, ImageProps, AnimationProps, VoiceoverProps }
 
-export {
-  Browser,
-  Video,
-  Image,
-  Animation,
-  Voiceover,
-  withValidation
-}
+export { Browser, Video, Image, Animation, Voiceover, withValidation }

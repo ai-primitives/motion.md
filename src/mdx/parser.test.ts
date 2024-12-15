@@ -35,8 +35,8 @@ resolution:
         fps: 30,
         resolution: {
           width: 1920,
-          height: 1080
-        }
+          height: 1080,
+        },
       })
     })
 
