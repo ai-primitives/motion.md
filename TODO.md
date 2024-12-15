@@ -20,7 +20,7 @@
   - [x] Implement MDX parser integration
   - [x] Add frontmatter handling
   - [x] Create slide separation logic
-  - [ ] Support Slidev-compatible syntax
+  - [x] Support Slidev-compatible syntax
 
 - [ ] Base Component System
   - [x] Define component interfaces
