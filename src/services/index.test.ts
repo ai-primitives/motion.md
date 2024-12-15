@@ -9,27 +9,27 @@ vi.mock('puppeteer', () => ({
         setViewport: vi.fn(),
         goto: vi.fn().mockRejectedValue(new Error('Failed to load page')),
         screenshot: vi.fn(),
-        close: vi.fn()
+        close: vi.fn(),
       }),
-      close: vi.fn()
-    })
-  }
+      close: vi.fn(),
+    }),
+  },
 }))
 
 // Mock axios for OpenAI API calls
 vi.mock('axios', () => ({
   default: {
-    post: vi.fn().mockRejectedValue(new Error('OpenAI API key required'))
-  }
+    post: vi.fn().mockRejectedValue(new Error('OpenAI API key required')),
+  },
 }))
 
 // Mock unsplash-js
 vi.mock('unsplash-js', () => ({
   createApi: vi.fn().mockReturnValue({
     search: {
-      getPhotos: vi.fn().mockRejectedValue(new Error('No images found'))
-    }
-  })
+      getPhotos: vi.fn().mockRejectedValue(new Error('No images found')),
+    },
+  }),
 }))
 
 describe('Services', () => {
@@ -44,7 +44,7 @@ describe('Services', () => {
     it('should throw error when video fetch fails', async () => {
       const service = new StockService({
         unsplashAccessKey: 'test-key',
-        storyblocksApiKey: 'test-key'
+        storyblocksApiKey: 'test-key',
       })
       await expect(service.getVideo('nature', 'hd')).rejects.toThrow('Failed to fetch video: Network Error')
     })
@@ -52,7 +52,7 @@ describe('Services', () => {
     it('should throw error when image fetch fails', async () => {
       const service = new StockService({
         unsplashAccessKey: 'test-key',
-        storyblocksApiKey: 'test-key'
+        storyblocksApiKey: 'test-key',
       })
       await expect(service.getImage('nature', 'regular')).rejects.toThrow('Failed to fetch image: No images found')
     })

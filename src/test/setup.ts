@@ -36,13 +36,11 @@ vi.mock('@mdx-js/mdx', () => {
       const hasComponent = /\<(Browser|Video|Image|Animation|Voiceover)/.test(source)
 
       // Handle slide separation
-      const contentWithoutFrontmatter = frontmatterMatch
-        ? source.slice(frontmatterMatch[0].length).trim()
-        : source.trim()
+      const contentWithoutFrontmatter = frontmatterMatch ? source.slice(frontmatterMatch[0].length).trim() : source.trim()
 
       const slides = contentWithoutFrontmatter
         .split(/^---$/m)
-        .map(slide => slide.trim())
+        .map((slide) => slide.trim())
         .filter(Boolean)
 
       // Return valid JavaScript code
@@ -54,7 +52,9 @@ vi.mock('@mdx-js/mdx', () => {
 
           exports.default = function MDXContent(props) {
             const {components = {}} = props;
-            ${hasComponent ? `
+            ${
+              hasComponent
+                ? `
               const {
                 Browser = () => null,
                 Video = () => null,
@@ -62,31 +62,38 @@ vi.mock('@mdx-js/mdx', () => {
                 Animation = () => null,
                 Voiceover = () => null
               } = components;
-            ` : ''}
+            `
+                : ''
+            }
 
             return _jsx(_Fragment, {
               children: [
-                ${slides.map((slide, index) => {
-                  const lines = slide.split('\n').map(line => {
-                    if (line.includes('<Browser')) {
-                      return '_jsx(Browser, { url: "https://example.com", width: 1920, height: 1080 })'
-                    } else if (line.includes('<Video')) {
-                      return '_jsx(Video, { src: "video.mp4", type: "storyblocks", width: 1920, height: 1080 })'
-                    } else if (line.includes('<Image')) {
-                      return '_jsx(Image, { src: "image.jpg", type: "unsplash", width: 1920, height: 1080 })'
-                    } else if (line.includes('<Animation')) {
-                      return '_jsx(Animation, { type: "magicui", name: "fade", duration: 1 })'
-                    } else if (line.includes('<Voiceover')) {
-                      return '_jsx(Voiceover, { text: "Hello world", voice: "default" })'
-                    }
-                    return `_jsx('p', { children: ${JSON.stringify(line)} })`
-                  }).join(',\n')
-                  return `_jsx('div', {
+                ${slides
+                  .map((slide, index) => {
+                    const lines = slide
+                      .split('\n')
+                      .map((line) => {
+                        if (line.includes('<Browser')) {
+                          return '_jsx(Browser, { url: "https://example.com", width: 1920, height: 1080 })'
+                        } else if (line.includes('<Video')) {
+                          return '_jsx(Video, { src: "video.mp4", type: "storyblocks", width: 1920, height: 1080 })'
+                        } else if (line.includes('<Image')) {
+                          return '_jsx(Image, { src: "image.jpg", type: "unsplash", width: 1920, height: 1080 })'
+                        } else if (line.includes('<Animation')) {
+                          return '_jsx(Animation, { type: "magicui", name: "fade", duration: 1 })'
+                        } else if (line.includes('<Voiceover')) {
+                          return '_jsx(Voiceover, { text: "Hello world", voice: "default" })'
+                        }
+                        return `_jsx('p', { children: ${JSON.stringify(line)} })`
+                      })
+                      .join(',\n')
+                    return `_jsx('div', {
                     className: 'slide',
                     'data-slide-index': ${index},
                     children: [${lines}]
                   })`
-                }).join(',\n')}
+                  })
+                  .join(',\n')}
               ]
             });
           };
@@ -95,53 +102,57 @@ vi.mock('@mdx-js/mdx', () => {
           exports.slides = ${JSON.stringify(slides)};
           exports.slidevConfig = ${JSON.stringify({
             layout: frontmatterData.layout || null,
-            transition: frontmatterData.transition || null
+            transition: frontmatterData.transition || null,
           })};
-        `
+        `,
       }
-    })
+    }),
   }
 })
 
 // Mock Puppeteer
-vi.mock('puppeteer', () => {
+vi.mock('puppeteer', async () => {
   const mockPage = {
     goto: vi.fn().mockRejectedValue(new Error('Failed to load page')),
     setViewport: vi.fn(),
     screenshot: vi.fn().mockResolvedValue(Buffer.from('mock-screenshot')),
-    close: vi.fn()
+    close: vi.fn(),
   }
 
   const mockBrowser = {
     newPage: vi.fn().mockResolvedValue(mockPage),
-    close: vi.fn()
+    close: vi.fn(),
   }
 
   return {
-    launch: vi.fn().mockResolvedValue(mockBrowser)
+    default: {
+      launch: vi.fn().mockResolvedValue(mockBrowser),
+    },
   }
 })
 
 // Mock axios
-vi.mock('axios', () => {
-  return {
-    default: {
-      create: vi.fn().mockReturnValue({
-        get: vi.fn().mockRejectedValue(new Error('Network Error')),
-        post: vi.fn().mockRejectedValue(new Error('Network Error'))
-      })
-    }
-  }
-})
+vi.mock('axios', () => ({
+  default: {
+    get: vi.fn().mockResolvedValue({
+      data: {
+        urls: { regular: 'https://example.com/image.jpg' },
+      },
+    }),
+    post: vi.fn().mockResolvedValue({
+      data: { data: [{ url: 'https://example.com/generated.png' }] },
+    }),
+  },
+}))
 
 // Mock unsplash-js
 vi.mock('unsplash-js', () => {
   return {
     createApi: vi.fn().mockReturnValue({
       photos: {
-        getRandom: vi.fn().mockRejectedValue(new Error('Failed to fetch image'))
-      }
-    })
+        getRandom: vi.fn().mockRejectedValue(new Error('Failed to fetch image: No images found')),
+      },
+    }),
   }
 })
 
@@ -149,8 +160,8 @@ vi.mock('unsplash-js', () => {
 beforeAll(() => {
   process.env = {
     ...process.env,
-    OPENAI_API_KEY: undefined,
-    UNSPLASH_ACCESS_KEY: undefined,
-    STORYBLOCKS_API_KEY: undefined
+    OPENAI_API_KEY: 'test-openai-key',
+    UNSPLASH_ACCESS_KEY: 'test-unsplash-key',
+    STORYBLOCKS_API_KEY: 'test-storyblocks-key',
   }
 })
