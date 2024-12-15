@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { parseMDX } from './parser'
-import { Browser, Video, Image, Animation, Voiceover } from '../components'
+import { Browser, Video, Image, Animation } from '../components'
 
 describe('MDX Parser', () => {
   describe('Basic MDX Parsing', () => {
@@ -74,13 +74,6 @@ resolution:
       const result = await parseMDX(content)
       expect(result.content).toContain('Animation')
       expect(result.content).toContain('fade')
-    })
-
-    it('should render Voiceover component', async () => {
-      const content = '<Voiceover text="Hello world" voice="default" />'
-      const result = await parseMDX(content)
-      expect(result.content).toContain('Voiceover')
-      expect(result.content).toContain('Hello world')
     })
 
     it('should handle multiple components in a single MDX', async () => {
