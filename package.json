@@ -30,10 +30,12 @@
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.2",
     "@types/testing-library__jest-dom": "^5.14.9",
+    "@types/yaml": "^1.9.6",
     "@vitejs/plugin-react": "^4.3.4",
     "gray-matter": "^4.0.3",
     "jsdom": "^25.0.1",
     "prettier": "^3.4.2",
+    "react-dom": "^19.0.0",
     "rehype-raw": "^7.0.0",
     "rehype-stringify": "^10.0.1",
     "remark-frontmatter": "^5.0.0",
@@ -60,10 +62,10 @@
     "node-fetch": "^2.7.0",
     "puppeteer": "^23.10.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
     "remotion": "^4.0.240",
     "unsplash-js": "^7.0.19",
-    "vfile-matter": "^5.0.0"
+    "vfile-matter": "^5.0.0",
+    "yaml": "^2.6.1"
   },
   "type": "module"
 }
