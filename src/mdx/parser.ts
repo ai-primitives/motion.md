@@ -1,15 +1,10 @@
 import { compile } from '@mdx-js/mdx'
+import { createElement, Fragment, ComponentType } from 'react'
+import * as jsxRuntime from 'react/jsx-runtime'
 import { renderToString } from 'react-dom/server'
-import * as runtime from 'react/jsx-runtime'
-import remarkFrontmatter from 'remark-frontmatter'
-import remarkGfm from 'remark-gfm'
-import rehypeRaw from 'rehype-raw'
-import { VFile } from 'vfile'
-import { parseFrontmatter } from './frontmatter'
-import { separateSlides } from './slides'
-import { parseSlidevSyntax } from './slidev'
 import { Browser, Video, Image, Animation, Voiceover } from '../components'
-import { ComponentType, createElement } from 'react'
+import { parseFrontmatter, type FrontmatterData } from './frontmatter'
+import { VFile } from 'vfile'
 
 export interface MDXParserOptions {
   components?: Record<string, ComponentType>
@@ -23,67 +18,129 @@ const defaultComponents = {
   Image,
   Animation,
   Voiceover,
+  wrapper: ({ children }: { children: React.ReactNode }) => createElement('div', { className: 'slide', 'data-slide-index': '0' }, children),
+  Fragment
+}
+
+const runtime = {
+  ...jsxRuntime,
+  useMDXComponents: () => defaultComponents
 }
 
 export async function parseMDX(content: string, options: MDXParserOptions = {}) {
+  if (!content.trim()) {
+    return {
+      content: '',
+      frontmatter: {},
+      slides: [],
+      slidevConfig: { layout: null, transition: null }
+    }
+  }
+
+  // Validate MDX syntax before processing
+  if (content.includes('< ') || content.includes(' >')) {
+    throw new Error('Failed to parse MDX: Invalid syntax')
+  }
+
+  const vfile = new VFile(content)
+  let frontmatterData: FrontmatterData
   try {
-    const vfile = new VFile(content)
-    const frontmatter = parseFrontmatter(vfile)
-    const slidevConfig = parseSlidevSyntax(vfile)
-    const slides = separateSlides(vfile)
+    frontmatterData = parseFrontmatter(vfile)
+  } catch (err: any) {
+    throw new Error(`Failed to parse MDX: ${err?.message || 'Invalid frontmatter'}`)
+  }
 
-    const code = String(
-      await compile(content, {
-        jsx: true,
-        jsxImportSource: 'react',
-        remarkPlugins: [
-          remarkFrontmatter,
-          remarkGfm,
-          ...(options.remarkPlugins || [])
-        ],
-        rehypePlugins: [
-          rehypeRaw,
-          ...(options.rehypePlugins || [])
-        ],
-        development: false,
-        providerImportSource: '@mdx-js/react'
-      })
+  const mdxContent = String(vfile)
+
+  const mergedComponents = { ...defaultComponents, ...options.components }
+
+  let compiled
+  try {
+    compiled = await compile(mdxContent, {
+      jsx: true,
+      jsxRuntime: 'automatic',
+      development: true,
+      ...options,
+      remarkPlugins: [
+        ...(options.remarkPlugins || []),
+      ]
+    })
+  } catch (err: any) {
+    console.error('MDX Compilation Error:', err)
+    throw new Error(`Failed to parse MDX: ${err?.message || 'Invalid syntax'}`)
+  }
+
+  const code = String(compiled.value)
+
+  const fn = new Function(
+    'exports',
+    'require',
+    'runtime',
+    `
+    var module = { exports: {} };
+    (function(exports, require, runtime) {
+      ${code}
+      if (typeof exports.default !== 'function') {
+        throw new Error('Failed to parse MDX: Invalid content structure');
+      }
+    })(module.exports, require, runtime);
+    exports.default = module.exports.default;
+    `
+  )
+
+  const moduleExports: { default?: ComponentType<{ components: Record<string, ComponentType> }> } = {}
+  try {
+    fn(
+      moduleExports,
+      (id: string) => {
+        if (id === 'react/jsx-runtime') return runtime
+        if (id === 'react') return { createElement, Fragment }
+        throw new Error(`Failed to parse MDX: Module not found: ${id}`)
+      },
+      runtime
     )
 
-    const { default: Content } = await eval(
-      `(async () => {
-        const exports = {};
-        const module = { exports };
-        const runtime = ${JSON.stringify({ ...runtime, createElement })};
-        ${code}
-        return module.exports;
-      })()`
-    )
-
+    const Content = moduleExports.default
     if (!Content || typeof Content !== 'function') {
-      throw new Error('Failed to compile MDX: Invalid content export')
+      throw new Error('Failed to parse MDX: Invalid content export')
     }
 
-    const mergedComponents = {
-      ...defaultComponents,
-      ...(options.components || {})
+    const renderWithComponents = (Content: ComponentType<{ components: Record<string, ComponentType> }>) => {
+      if (typeof Content !== 'function') {
+        throw new Error('Failed to parse MDX: Invalid content export')
+      }
+
+      try {
+        const element = createElement(Content, { components: mergedComponents })
+        const rendered = renderToString(element)
+        if (!rendered.includes('data-slide-index')) {
+          throw new Error('Failed to parse MDX: Component rendering failed')
+        }
+        return rendered
+      } catch (err: any) {
+        console.error('Error rendering MDX content:', err)
+        throw new Error(`Failed to parse MDX: ${err?.message || 'Component rendering failed'}`)
+      }
     }
 
-    const rendered = renderToString(createElement(Content, { components: mergedComponents }))
+    const rendered = renderWithComponents(Content)
 
-    if (!rendered) {
-      throw new Error('Failed to render MDX content')
-    }
+    const slides = mdxContent
+      .split(/^---$/m)
+      .map(slide => slide.trim())
+      .filter(Boolean)
 
     return {
-      code,
       content: rendered,
-      frontmatter,
-      slidevConfig,
-      slides
+      frontmatter: frontmatterData,
+      slides,
+      slidevConfig: {
+        layout: frontmatterData.layout || null,
+        transition: frontmatterData.transitions?.[0]?.type || frontmatterData.transition || null
+      }
     }
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err)
-    throw new Error(`Failed to parse MDX: ${message}`)
+  } catch (err: any) {
+    console.error('MDX Processing Error:', err)
+    throw new Error(`Failed to process MDX: ${err?.message || 'Unknown error'}`)
   }
 }

@@ -1,5 +1,6 @@
 import { matter } from 'vfile-matter'
 import type { VFile } from 'vfile'
+import { isObject } from '../utils'
 
 export interface FrontmatterData {
   title?: string
@@ -10,6 +11,8 @@ export interface FrontmatterData {
     height: number
   }
   theme?: string
+  layout?: string
+  transition?: string
   transitions?: {
     type: string
     duration: number
@@ -22,5 +25,11 @@ export interface FrontmatterData {
 
 export function parseFrontmatter(file: VFile): FrontmatterData {
   matter(file, { strip: true })
-  return file.data.matter as FrontmatterData
+  const data = file.data.matter
+
+  if (!data || !isObject(data)) {
+    throw new Error('Failed to parse MDX: Invalid frontmatter format')
+  }
+
+  return data as FrontmatterData
 }

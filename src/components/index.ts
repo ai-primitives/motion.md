@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, createElement } from 'react'
 
 interface BrowserProps {
   url?: string
@@ -32,23 +32,23 @@ interface VoiceoverProps {
 }
 
 const Browser: FC<BrowserProps> = ({ url, width = 1920, height = 1080 }) => {
-  return null
+  return createElement('div', { className: 'browser-component' }, `Browser: ${url}`)
 }
 
 const Video: FC<VideoProps> = ({ src, type, width = 1920, height = 1080 }) => {
-  return null
+  return createElement('div', { className: 'video-component' }, `Video: ${src}`)
 }
 
 const Image: FC<ImageProps> = ({ src, type, width = 1920, height = 1080 }) => {
-  return null
+  return createElement('div', { className: 'image-component' }, `Image: ${src}`)
 }
 
 const Animation: FC<AnimationProps> = ({ type, name, duration = 1 }) => {
-  return null
+  return createElement('div', { className: 'animation-component' }, `Animation: ${name}`)
 }
 
 const Voiceover: FC<VoiceoverProps> = ({ text, voice }) => {
-  return null
+  return createElement('div', { className: 'voiceover-component' }, `Voiceover: ${text}`)
 }
 
 export type {
