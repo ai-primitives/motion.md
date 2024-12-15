@@ -130,16 +130,13 @@ vi.mock('puppeteer', () => {
 })
 
 // Mock axios
-vi.mock('axios', () => {
-  return {
-    default: {
-      create: vi.fn().mockReturnValue({
-        get: vi.fn().mockRejectedValue(new Error('Network Error')),
-        post: vi.fn().mockRejectedValue(new Error('Network Error')),
-      }),
-    },
-  }
-})
+vi.mock('axios', () => ({
+  default: {
+    post: vi.fn().mockImplementation(() => {
+      throw new Error('OpenAI API key is required')
+    }),
+  },
+}))
 
 // Mock unsplash-js
 vi.mock('unsplash-js', () => {
