@@ -19,7 +19,7 @@
 - [ ] Markdown Processing
   - [x] Implement MDX parser integration
   - [x] Add frontmatter handling
-  - [ ] Create slide separation logic
+  - [x] Create slide separation logic
   - [ ] Support Slidev-compatible syntax
 
 - [ ] Base Component System
