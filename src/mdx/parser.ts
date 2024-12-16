@@ -2,14 +2,15 @@ import React, { createElement, Fragment } from 'react'
 import { compile } from '@mdx-js/mdx'
 import { VFile } from 'vfile'
 import { renderToString } from 'react-dom/server'
-import { validateBrowserProps, validateVideoProps, validateImageProps, validateAnimationProps, validateVoiceoverProps } from '../utils/validation'
-import { Browser, Video, Image, Animation, Voiceover } from '../components'
+import { validateBrowserProps, validateVideoProps, validateImageProps, validateAnimationProps } from '../utils/validation'
+import { Browser, Video, Image, Animation } from '../components'
 import { parseFrontmatter, FrontmatterData } from './frontmatter'
+import { separateSlides, type Slide } from './slides'
 
 export interface ParsedMDX {
   content: string
   frontmatter: FrontmatterData
-  slides: string[]
+  slides: Slide[]
   slidevConfig: { layout: string | null; transition: string | null }
 }
 
@@ -51,14 +52,6 @@ const defaultComponents = {
       throw new Error(`Failed to parse MDX: ${error.message}`)
     }
   },
-  Voiceover: (props: any) => {
-    try {
-      validateVoiceoverProps(props)
-      return createElement(Voiceover, props)
-    } catch (error: any) {
-      throw new Error(`Failed to parse MDX: ${error.message}`)
-    }
-  },
   wrapper: ({ children }: { children: React.ReactNode }) => createElement('div', { className: 'slide', 'data-slide-index': '0' }, children),
   Fragment,
 }
@@ -84,31 +77,25 @@ export async function parseMDX(mdxContent: string, options: MDXParserOptions = {
     }
   }
 
-  // Check for invalid MDX syntax - any angle brackets with adjacent spaces
+  // Check for invalid MDX syntax
   const trimmedContent = mdxContent.trim()
   if (trimmedContent.includes('< ') || trimmedContent.includes(' >') || trimmedContent.includes(' <') || trimmedContent.includes('> ')) {
     throw new Error('Failed to parse MDX: Invalid syntax')
   }
 
-  // Validate through compilation
-  try {
-    await compile(mdxContent, {
-      jsx: true,
-      development: true,
-    })
-  } catch (err: any) {
-    throw new Error('Failed to parse MDX: Invalid syntax')
-  }
-
+  // Parse frontmatter and separate slides
   const vfile = new VFile(mdxContent)
   const frontmatterData = parseFrontmatter(vfile)
   const mdxWithoutFrontmatter = String(vfile)
+  const slides = separateSlides(vfile)
+
   const slidevConfig = {
     layout: frontmatterData.layout || null,
     transition: frontmatterData.transitions?.[0]?.type || frontmatterData.transition || null,
   }
 
-  const componentRegex = /<(Browser|Video|Image|Animation|Voiceover)\s*([^>]*?)\/>/g
+  // Validate components
+  const componentRegex = /<(Browser|Video|Image|Animation)\s*([^>]*?)\/>/g
   let match
   while ((match = componentRegex.exec(mdxWithoutFrontmatter)) !== null) {
     const [_, componentName, propsString] = match
@@ -145,9 +132,6 @@ export async function parseMDX(mdxContent: string, options: MDXParserOptions = {
         case 'Animation':
           validateAnimationProps(props)
           break
-        case 'Voiceover':
-          validateVoiceoverProps(props)
-          break
       }
     } catch (error: any) {
       throw new Error(`Failed to parse MDX: ${error.message}`)
@@ -157,7 +141,6 @@ export async function parseMDX(mdxContent: string, options: MDXParserOptions = {
   // Compile MDX
   let compiledResult
   try {
-    // First try to validate the MDX syntax
     const result = await compile(mdxWithoutFrontmatter, {
       jsx: true,
       jsxRuntime: 'automatic',
@@ -204,8 +187,6 @@ export async function parseMDX(mdxContent: string, options: MDXParserOptions = {
       throw new Error(`Failed to parse MDX: ${err?.message}`)
     }
   }
-
-  const slides = mdxWithoutFrontmatter.split(/^---$/m)
 
   return {
     content: renderWithComponents(),
